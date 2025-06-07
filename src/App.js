@@ -23,8 +23,10 @@ import AOS from "aos";
 import "aos/dist/aos.css";
 
 // IDs de destinos que pertenecen a cada paquete
-const paquete1Ids = [1, 2];
-const paquete2Ids = [2, 3];
+const paquete1Ids = [1, 2, 3];
+const paquete2Ids = [6];
+const paquete3Ids = [4, 5]; // nuevo paquete 3
+const paquete4Ids = [2, 3, 11]; // nuevo paquete 4
 
 const App = () => {
   // Estado de autenticación de usuario
@@ -50,6 +52,8 @@ const App = () => {
   const [paquetes, setPaquetes] = useState({
     paquete1: false,
     paquete2: false,
+    paquete3: false, // nuevo paquete 3
+    paquete4: false, // nuevo paquete 4
   });
   // Estado para días que se usará cada tipo de transporte
   const [transportDays, setTransportDays] = useState({});
@@ -67,28 +71,37 @@ const App = () => {
 
   // Sincroniza la selección de destinos en base a los paquetes activados
   useEffect(() => {
-    const newSelected = new Set(selectedDestinations);
+    const newSelected = new Set();
 
-    // Si el paquete 1 está activo, añadir sus destinos
+    // Añadir destinos de paquetes activos
     if (paquetes.paquete1) paquete1Ids.forEach((id) => newSelected.add(id));
-    // Si el paquete 2 está activo, añadir sus destinos
     if (paquetes.paquete2) paquete2Ids.forEach((id) => newSelected.add(id));
+    if (paquetes.paquete3) paquete3Ids.forEach((id) => newSelected.add(id));
+    if (paquetes.paquete4) paquete4Ids.forEach((id) => newSelected.add(id));
 
-    // Si paquete1 se desactiva, eliminar sus destinos (que no estén en paquete2)
-    if (!paquetes.paquete1)
-      paquete1Ids.forEach((id) => {
-        if (!paquetes.paquete2 || !paquete2Ids.includes(id))
-          newSelected.delete(id);
-      });
+    // Conjunto de destinos que deben eliminarse si su paquete fue desactivado y no pertenecen a otros paquetes activos
+    const allPaqueteIds = {
+      paquete1: paquete1Ids,
+      paquete2: paquete2Ids,
+      paquete3: paquete3Ids,
+      paquete4: paquete4Ids,
+    };
 
-    // Si paquete2 se desactiva, eliminar sus destinos (que no estén en paquete1)
-    if (!paquetes.paquete2)
-      paquete2Ids.forEach((id) => {
-        if (!paquetes.paquete1 || !paquete1Ids.includes(id))
-          newSelected.delete(id);
-      });
+    // Recorrer todos los paquetes
+    Object.entries(allPaqueteIds).forEach(([paqueteKey, ids]) => {
+      if (!paquetes[paqueteKey]) {
+        ids.forEach((id) => {
+          const stillIncluded = Object.entries(allPaqueteIds).some(
+            ([otherKey, otherIds]) =>
+              otherKey !== paqueteKey &&
+              paquetes[otherKey] &&
+              otherIds.includes(id)
+          );
+          if (!stillIncluded) newSelected.delete(id);
+        });
+      }
+    });
 
-    // Actualizar destinos seleccionados con el conjunto modificado
     setSelectedDestinations(Array.from(newSelected));
   }, [paquetes]);
 
@@ -115,7 +128,9 @@ const App = () => {
   const toggleDestination = (destinationId) => {
     if (
       (paquetes.paquete1 && paquete1Ids.includes(destinationId)) ||
-      (paquetes.paquete2 && paquete2Ids.includes(destinationId))
+      (paquetes.paquete2 && paquete2Ids.includes(destinationId)) ||
+      (paquetes.paquete3 && paquete3Ids.includes(destinationId)) || // nuevo
+      (paquetes.paquete4 && paquete4Ids.includes(destinationId)) // nuevo
     )
       return; // No permite quitar destinos que estén en paquete activo
 
@@ -254,6 +269,8 @@ const App = () => {
                 paquetes={paquetes}
                 paquete1Ids={paquete1Ids}
                 paquete2Ids={paquete2Ids}
+                paquete3Ids={paquete3Ids} // nuevo
+                paquete4Ids={paquete4Ids} // nuevo
                 isHighSeason={isHighSeason}
               />
             </Section>

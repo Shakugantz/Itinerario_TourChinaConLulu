@@ -1,49 +1,59 @@
 import React, { useState } from "react";
 import TransportSelector from "./TransportSelector";
-import { transports } from "../mock/transports"; // Importa tu arreglo de transportes
+import { transports } from "../mock/transports";
+import { AnimatePresence, motion } from "framer-motion"; // Animaciones suaves
 
 /**
- * Componente para mostrar la lista de transportes con botón Mostrar más / Mostrar menos
+ * Componente que muestra una lista de opciones de transporte.
+ * Permite mostrar más o menos elementos con animación.
  */
 const TransportList = ({
-  transportDays,
-  updateTransportDays,
-  handleAirportServiceChange,
+  transportDays, // Días seleccionados por transporte (objeto con IDs)
+  updateTransportDays, // Función para actualizar los días de cada transporte
+  handleAirportServiceChange, // Función para alternar servicio de aeropuerto
 }) => {
-  // Estado para controlar si la lista está expandida o no
-  const [expanded, setExpanded] = useState(false);
+  const [showAll, setshowAll] = useState(false); // Control de expansión
 
-  // Cuántos transportes mostrar cuando NO está expandido
-  const VISIBLE_COUNT = 2;
+  const VISIBLE_COUNT = 3; // Máximo visible por defecto
 
-  // Transportes a mostrar según el estado expanded
-  const displayedTransports = expanded
+  // Transportes visibles dependiendo del estado
+  const displayedTransports = showAll
     ? transports
     : transports.slice(0, VISIBLE_COUNT);
 
   return (
     <section>
-      <div className="space-y-3">
-        {displayedTransports.map((transport) => (
-          <TransportSelector
-            key={transport.id}
-            transport={transport}
-            selectedDays={transportDays[transport.id] || 0}
-            onDaysChange={(days) => updateTransportDays(transport.id, days)}
-            onAirportServiceChange={handleAirportServiceChange}
-          />
-        ))}
+      {/* Lista animada de transportes */}
+      <div className="space-y-3 overflow-hidden">
+        <AnimatePresence initial={false}>
+          {displayedTransports.map((transport) => (
+            <motion.div
+              key={transport.id}
+              initial={{ opacity: 0, y: 20 }} // Aparece desde abajo
+              animate={{ opacity: 1, y: 0 }} // A estado visible
+              exit={{ opacity: 0, y: -20 }} // Desaparece hacia arriba
+              transition={{ duration: 0.5, ease: "easeInOut" }}
+            >
+              <TransportSelector
+                transport={transport}
+                selectedDays={transportDays[transport.id] || 0}
+                onDaysChange={(days) => updateTransportDays(transport.id, days)}
+                onAirportServiceChange={handleAirportServiceChange}
+              />
+            </motion.div>
+          ))}
+        </AnimatePresence>
       </div>
 
       {/* Botón Mostrar más / Mostrar menos */}
       {transports.length > VISIBLE_COUNT && (
         <div className="mt-4 flex justify-center">
           <button
-            onClick={() => setExpanded(!expanded)}
+            onClick={() => setshowAll(!showAll)}
             className="bg-gradient-to-r from-[#6366f1] to-[#a855f7] text-white py-2 px-6 rounded-lg hover:bg-gradient-to-l transition-colors duration-300"
-            aria-expanded={expanded}
+            aria-expanded={showAll} // Atributo de accesibilidad para indicar estado
           >
-            {expanded ? "Mostrar menos" : "Mostrar más"}
+            {showAll ? "Mostrar menos" : "Mostrar más"}
           </button>
         </div>
       )}

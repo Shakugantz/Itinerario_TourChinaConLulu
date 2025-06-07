@@ -269,8 +269,8 @@ const App = () => {
                 paquetes={paquetes}
                 paquete1Ids={paquete1Ids}
                 paquete2Ids={paquete2Ids}
-                paquete3Ids={paquete3Ids} // nuevo
-                paquete4Ids={paquete4Ids} // nuevo
+                paquete3Ids={paquete3Ids}
+                paquete4Ids={paquete4Ids}
                 isHighSeason={isHighSeason}
               />
             </Section>

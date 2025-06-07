@@ -21,7 +21,7 @@ const DestinationList = ({
   return (
     <div>
       <div className="space-y-3">
-        {displayedDestinations.map((destination) => {
+        {displayedDestinations.map((destination, idx) => {
           // Chequea si el destino está en paquete activo (para deshabilitar toggle)
           const inActivePackage =
             (paquetes.paquete1 && paquete1Ids.includes(destination.id)) ||
@@ -39,6 +39,7 @@ const DestinationList = ({
                   : destination.lowSeasonPrice
               }
               disabled={inActivePackage}
+              index={idx} // <-- INDEX PARA NÚMERO DECORATIVO
             />
           );
         })}

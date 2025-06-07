@@ -223,11 +223,13 @@ const App = () => {
             {/* Selector de fechas */}
             <Section title="Fechas del viaje">
               <DateRangePicker onDateChange={setDateRange} />
-              <p className="mt-3 text-sm text-gray-500">
-                {isHighSeason
-                  ? "Estás en temporada alta (Abril-Octubre)"
-                  : "Estás en temporada baja (Noviembre-Marzo)"}
-              </p>
+              {dateRange.start && dateRange.end && (
+                <p className="mt-3 text-sm text-gray-500">
+                  {isHighSeason
+                    ? "Estás en temporada alta (Abril-Octubre)"
+                    : "Estás en temporada baja (Noviembre-Marzo)"}
+                </p>
+              )}
             </Section>
 
             {/* Selector número de personas */}

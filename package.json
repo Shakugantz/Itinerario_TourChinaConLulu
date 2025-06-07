@@ -2,7 +2,7 @@
   "name": "sistema_presupuesto_lulu",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://github.com/Shakugantz/Itinerario_TourChinaConLulu",
+  "homepage": "https://shakugantz.github.io/Itinerario_TourChinaConLulu",
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",

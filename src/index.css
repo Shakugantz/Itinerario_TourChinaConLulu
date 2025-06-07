@@ -1,0 +1,17 @@
+/* Importa las fuentes desde Google Fonts */
+@import url("https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Poppins:ital,wght@0,400;1,600&display=swap");
+
+/* Aplica Tailwind base */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Estilos globales opcionales */
+body {
+  /* Quitamos el fondo redundante */
+  /* bg-gradient-to-br from-indigo-500 via-purple-600 to-pink-500 */
+  @apply text-white;
+  font-family: "Poppins", sans-serif;
+}
+
+/* El fondo degradado ya se maneja con el componente AnimatedBackground, así evitamos redundancia */

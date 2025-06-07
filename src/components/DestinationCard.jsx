@@ -2,39 +2,80 @@ import React from "react";
 
 /**
  * Componente que muestra una tarjeta de destino turístico.
- * Incluye un número secuencial decorativo, imagen, nombre, precio y checkbox de selección.
+ * Se pinta con el color del paquete seleccionado si corresponde,
+ * y con color índigo si fue seleccionado manualmente.
  */
 const DestinationCard = ({
-  destination, // Objeto que contiene datos del destino (nombre, imagen, id)
-  isSelected, // Booleano: indica si esta tarjeta está seleccionada
-  onToggle, // Función que se ejecuta al hacer clic en la tarjeta o checkbox
-  currentPrice, // Precio actual del destino según la temporada
-  index, // Índice numérico del destino (para mostrar el número decorativo)
+  destination,
+  isSelected,
+  onToggle,
+  currentPrice,
+  index,
+  colorClase, // <-- Clase de color (ej. 'blue', 'violet', etc.) según el paquete
 }) => {
+  // Colores dinámicos según el paquete (por nombre base)
+  const colorMap = {
+    green: {
+      border: "border-green-500",
+      bg: "bg-green-50",
+      ring: "ring-green-400/40",
+      text: "text-green-500",
+    },
+    violet: {
+      border: "border-violet-500",
+      bg: "bg-violet-50",
+      ring: "ring-violet-400/40",
+      text: "text-violet-500",
+    },
+    pink: {
+      border: "border-pink-500",
+      bg: "bg-pink-50",
+      ring: "ring-pink-400/40",
+      text: "text-pink-500",
+    },
+    yellow: {
+      border: "border-yellow-500",
+      bg: "bg-yellow-50",
+      ring: "ring-yellow-400/40",
+      text: "text-yellow-500",
+    },
+    blue: {
+      border: "border-blue-500",
+      bg: "bg-blue-50",
+      ring: "ring-blue-400/40",
+      text: "text-blue-500",
+    },
+    white: {
+      border: "border-gray-200",
+      bg: "bg-white",
+      ring: "",
+      text: "text-gray-300",
+    },
+  };
+
+  // Determina el color a usar cuando está seleccionado
+  const selectedColor = isSelected
+    ? colorClase
+      ? colorMap[colorClase] // Paquete activado
+      : colorMap["blue"] // Seleccionado manualmente
+    : colorMap["white"]; // No seleccionado
+
   return (
-    // Contenedor principal de la tarjeta con estilos dinámicos si está seleccionada
     <div
-      className={`relative p-4 pl-14 border rounded-xl cursor-pointer transition-all shadow-sm hover:shadow-md duration-200 ${
-        isSelected
-          ? "border-blue-500 bg-blue-50 ring-2 ring-blue-400/40"
-          : "border-gray-200 hover:border-gray-300 bg-white"
-      }`}
-      onClick={onToggle} // Maneja el clic para alternar la selección
+      className={`relative p-4 pl-14 rounded-xl cursor-pointer transition-all shadow-sm hover:shadow-md duration-200 
+        ${selectedColor.border} ${selectedColor.bg} ${selectedColor.ring}`}
+      onClick={onToggle}
     >
-      {/* Número decorativo a la izquierda */}
       <div
-        className={`absolute left-4 top-1/2 -translate-y-1/2 text-3xl font-extrabold font-orbitron transition-all duration-300 ${
-          isSelected
-            ? "text-blue-500 animate-glow" // Color y animación si está seleccionado
-            : "text-gray-300"
-        }`}
+        className={`absolute left-4 top-1/2 -translate-y-1/2 text-3xl font-extrabold font-orbitron transition-all duration-300 
+          ${
+            isSelected ? `${selectedColor.text} animate-glow` : "text-gray-300"
+          }`}
       >
         {index + 1}
       </div>
 
-      {/* Contenido de la tarjeta: imagen + texto + checkbox */}
       <div className="flex items-center space-x-4">
-        {/* Imagen del destino */}
         <div className="w-16 h-16 bg-gray-100 rounded-lg overflow-hidden shadow-inner">
           <img
             src={destination.image}
@@ -43,7 +84,6 @@ const DestinationCard = ({
           />
         </div>
 
-        {/* Nombre y precio del destino */}
         <div className="flex-1">
           <h3 className="font-semibold text-gray-800 text-base">
             {destination.name}
@@ -53,11 +93,10 @@ const DestinationCard = ({
           </p>
         </div>
 
-        {/* Checkbox para seleccionar el destino */}
         <input
           type="checkbox"
           checked={isSelected}
-          onClick={(e) => e.stopPropagation()} // Evita propagar el clic al div padre
+          onClick={(e) => e.stopPropagation()}
           onChange={onToggle}
           className="form-checkbox h-5 w-5 text-blue-600 focus:ring-blue-500 rounded"
         />

@@ -129,8 +129,8 @@ const App = () => {
     if (
       (paquetes.paquete1 && paquete1Ids.includes(destinationId)) ||
       (paquetes.paquete2 && paquete2Ids.includes(destinationId)) ||
-      (paquetes.paquete3 && paquete3Ids.includes(destinationId)) || // nuevo
-      (paquetes.paquete4 && paquete4Ids.includes(destinationId)) // nuevo
+      (paquetes.paquete3 && paquete3Ids.includes(destinationId)) ||
+      (paquetes.paquete4 && paquete4Ids.includes(destinationId))
     )
       return; // No permite quitar destinos que estén en paquete activo
 

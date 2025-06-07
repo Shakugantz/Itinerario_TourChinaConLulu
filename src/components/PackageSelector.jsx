@@ -1,30 +1,38 @@
 import React from "react";
-import { Checkbox } from "@mui/material";
-import { FaBoxOpen } from "react-icons/fa";
-import { MdLocationOn } from "react-icons/md";
+import { Checkbox } from "@mui/material"; // Componente de checkbox de la librería Material UI
+import { FaBoxOpen } from "react-icons/fa"; // Ícono de caja abierta de FontAwesome
+import { MdLocationOn } from "react-icons/md"; // Ícono de ubicación de Material Design
 
+/**
+ * Componente que muestra una cuadrícula de paquetes turísticos con casillas de verificación.
+ * @param {Object} paquetes - Objeto con estado de selección de cada paquete (paquete1, paquete2, etc.)
+ * @param {Function} togglePaquete - Función que alterna la selección de un paquete por su clave
+ */
 const PackageSelector = ({ paquetes, togglePaquete }) => {
   return (
     <div className="grid gap-4 md:grid-cols-2">
       {/* Paquete 1 */}
       <div
-        className={`relative flex flex-col rounded-2xl border p-5 shadow-md transition-all hover:shadow-xl cursor-pointer bg-gradient-to-r from-blue-50 to-white ring-1 ring-blue-200`}
+        className="relative flex flex-col rounded-2xl border p-5 shadow-md transition-all hover:shadow-xl cursor-pointer bg-gradient-to-r from-green-50 to-white ring-1 ring-green-200"
         onClick={() => togglePaquete("paquete1")}
       >
+        {/* Checkbox en la esquina superior derecha */}
         <div className="absolute top-3 right-3">
           <Checkbox
             checked={paquetes.paquete1}
             onClick={(e) => e.stopPropagation()}
             onChange={() => togglePaquete("paquete1")}
-            sx={{ color: "#3B82F6", "&.Mui-checked": { color: "#1D4ED8" } }}
+            sx={{ color: "#22c55e", "&.Mui-checked": { color: "#15803d" } }} // verde claro y verde oscuro
           />
         </div>
+
+        {/* Contenido visual del paquete */}
         <div className="flex items-center gap-3">
-          <FaBoxOpen className="text-3xl text-blue-600" />
+          <FaBoxOpen className="text-3xl text-green-600" />
           <div>
             <h3 className="text-lg font-semibold text-gray-800">Paquete 1</h3>
             <p className="text-sm text-gray-600 flex items-center gap-1">
-              <MdLocationOn className="text-blue-500" /> Destinos 1, 2 y 3
+              <MdLocationOn className="text-green-500" /> Destinos 1, 2 y 3
             </p>
           </div>
         </div>

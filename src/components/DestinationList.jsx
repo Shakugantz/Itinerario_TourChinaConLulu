@@ -8,44 +8,60 @@ const DestinationList = ({
   paquetes,
   paquete1Ids,
   paquete2Ids,
+  paquete3Ids,
+  paquete4Ids,
   isHighSeason,
 }) => {
-  // Estado para controlar mostrar más o menos destinos
   const [showAll, setShowAll] = useState(false);
 
-  // Determina qué destinos mostrar según showAll
   const displayedDestinations = showAll
     ? destinations
     : destinations.slice(0, 3);
 
+  // Mapeo de colores por nombre de paquete
+  const paqueteColorMap = {
+    paquete1: "green",
+    paquete2: "violet",
+    paquete3: "pink",
+    paquete4: "yellow",
+  };
+
+  // Construye un mapa destinoId → colorClase (solo si el paquete está activo)
+  const getColorClaseForDestino = (id) => {
+    if (paquetes.paquete1 && paquete1Ids.includes(id)) return "green";
+    if (paquetes.paquete2 && paquete2Ids.includes(id)) return "violet";
+    if (paquetes.paquete3 && paquete3Ids.includes(id)) return "pink";
+    if (paquetes.paquete4 && paquete4Ids.includes(id)) return "yellow";
+    return null;
+  };
+
+  const isInActivePackage = (id) =>
+    (paquetes.paquete1 && paquete1Ids.includes(id)) ||
+    (paquetes.paquete2 && paquete2Ids.includes(id)) ||
+    (paquetes.paquete3 && paquete3Ids.includes(id)) ||
+    (paquetes.paquete4 && paquete4Ids.includes(id));
+
   return (
     <div>
       <div className="space-y-3">
-        {displayedDestinations.map((destination, idx) => {
-          // Chequea si el destino está en paquete activo (para deshabilitar toggle)
-          const inActivePackage =
-            (paquetes.paquete1 && paquete1Ids.includes(destination.id)) ||
-            (paquetes.paquete2 && paquete2Ids.includes(destination.id));
-
-          return (
-            <DestinationCard
-              key={destination.id}
-              destination={destination}
-              isSelected={selectedDestinations.includes(destination.id)}
-              onToggle={() => toggleDestination(destination.id)}
-              currentPrice={
-                isHighSeason
-                  ? destination.highSeasonPrice
-                  : destination.lowSeasonPrice
-              }
-              disabled={inActivePackage}
-              index={idx} // <-- INDEX PARA NÚMERO DECORATIVO
-            />
-          );
-        })}
+        {displayedDestinations.map((destination, idx) => (
+          <DestinationCard
+            key={destination.id}
+            destination={destination}
+            isSelected={selectedDestinations.includes(destination.id)}
+            onToggle={() => toggleDestination(destination.id)}
+            currentPrice={
+              isHighSeason
+                ? destination.highSeasonPrice
+                : destination.lowSeasonPrice
+            }
+            disabled={isInActivePackage(destination.id)}
+            colorClase={getColorClaseForDestino(destination.id)}
+            index={idx}
+          />
+        ))}
       </div>
 
-      {/* Botón para mostrar más / menos si hay más de 3 destinos */}
       {destinations.length > 3 && (
         <div className="mt-4 text-center">
           <button

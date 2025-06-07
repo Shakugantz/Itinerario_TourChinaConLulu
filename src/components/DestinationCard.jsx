@@ -1,9 +1,10 @@
 import React from "react";
+import { Checkbox } from "@mui/material";
 
 /**
  * Componente que muestra una tarjeta de destino turístico.
  * Se pinta con el color del paquete seleccionado si corresponde,
- * y con color índigo si fue seleccionado manualmente.
+ * y con color azul si fue seleccionado manualmente.
  */
 const DestinationCard = ({
   destination,
@@ -11,7 +12,7 @@ const DestinationCard = ({
   onToggle,
   currentPrice,
   index,
-  colorClase, // <-- Clase de color (ej. 'blue', 'violet', etc.) según el paquete
+  colorClase, // Clase de color (ej. 'blue', 'violet', etc.) según el paquete
 }) => {
   // Colores dinámicos según el paquete (por nombre base)
   const colorMap = {
@@ -20,45 +21,60 @@ const DestinationCard = ({
       bg: "bg-green-50",
       ring: "ring-green-400/40",
       text: "text-green-500",
+      checkboxColor: "#22c55e",
+      checkboxChecked: "#16a34a",
     },
     violet: {
       border: "border-violet-500",
       bg: "bg-violet-50",
       ring: "ring-violet-400/40",
       text: "text-violet-500",
+      checkboxColor: "#8b5cf6",
+      checkboxChecked: "#7c3aed",
     },
     pink: {
       border: "border-pink-500",
       bg: "bg-pink-50",
       ring: "ring-pink-400/40",
       text: "text-pink-500",
+      checkboxColor: "#ec4899",
+      checkboxChecked: "#db2777",
     },
     yellow: {
       border: "border-yellow-500",
       bg: "bg-yellow-50",
       ring: "ring-yellow-400/40",
       text: "text-yellow-500",
+      checkboxColor: "#eab308",
+      checkboxChecked: "#ca8a04",
     },
     blue: {
       border: "border-blue-500",
       bg: "bg-blue-50",
       ring: "ring-blue-400/40",
       text: "text-blue-500",
+      checkboxColor: "#3b82f6",
+      checkboxChecked: "#1e40af",
     },
     white: {
       border: "border-gray-200",
       bg: "bg-white",
       ring: "",
       text: "text-gray-300",
+      checkboxColor: "#6366f1",
+      checkboxChecked: "#4f46e5",
     },
   };
 
-  // Determina el color a usar cuando está seleccionado
+  // Selección de color:
+  // Si está seleccionado y tiene paquete, usa color del paquete
+  // Si está seleccionado manualmente (sin paquete), usa azul (blue)
+  // Si no está seleccionado, usa blanco (white)
   const selectedColor = isSelected
     ? colorClase
-      ? colorMap[colorClase] // Paquete activado
-      : colorMap["blue"] // Seleccionado manualmente
-    : colorMap["white"]; // No seleccionado
+      ? colorMap[colorClase]
+      : colorMap["blue"] // selección manual = azul
+    : colorMap["white"]; // no seleccionado = blanco
 
   return (
     <div
@@ -93,12 +109,16 @@ const DestinationCard = ({
           </p>
         </div>
 
-        <input
-          type="checkbox"
+        <Checkbox
           checked={isSelected}
           onClick={(e) => e.stopPropagation()}
           onChange={onToggle}
-          className="form-checkbox h-5 w-5 text-blue-600 focus:ring-blue-500 rounded"
+          sx={{
+            color: selectedColor.checkboxColor,
+            "&.Mui-checked": {
+              color: selectedColor.checkboxChecked,
+            },
+          }}
         />
       </div>
     </div>

@@ -25,12 +25,14 @@ import "aos/dist/aos.css";
 // IDs de destinos que pertenecen a cada paquete
 const paquete1Ids = [1, 2, 3];
 const paquete2Ids = [6];
-const paquete3Ids = [4, 5]; // nuevo paquete 3
-const paquete4Ids = [2, 3, 11]; // nuevo paquete 4
+const paquete3Ids = [4, 5];
+const paquete4Ids = [2, 3, 11];
 
 const App = () => {
   // Estado de autenticación de usuario
   const [user, setUser] = useState(null);
+  // Estado que indica si el usuario hizo clic en "Iniciar sesión"
+  const [loginManuallyConfirmed, setLoginManuallyConfirmed] = useState(false);
 
   useEffect(() => {
     AOS.init({ duration: 1000 });
@@ -52,8 +54,8 @@ const App = () => {
   const [paquetes, setPaquetes] = useState({
     paquete1: false,
     paquete2: false,
-    paquete3: false, // nuevo paquete 3
-    paquete4: false, // nuevo paquete 4
+    paquete3: false,
+    paquete4: false,
   });
   // Estado para días que se usará cada tipo de transporte
   const [transportDays, setTransportDays] = useState({});
@@ -207,9 +209,9 @@ const App = () => {
     airportServicePricesByTransport,
   ]);
 
-  // Si el usuario no ha iniciado sesión, mostrar ventana de login
-  if (!user) {
-    return <Login />;
+  // Mostrar login hasta que el usuario confirme manualmente que desea iniciar sesión
+  if (!user || !loginManuallyConfirmed) {
+    return <Login onLoginSuccess={() => setLoginManuallyConfirmed(true)} />;
   }
 
   return (

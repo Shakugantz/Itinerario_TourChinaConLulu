@@ -10,7 +10,7 @@ import {
 } from "@mui/icons-material";
 import confetti from "canvas-confetti";
 
-const Login = () => {
+const Login = ({ onLoginSuccess }) => {
   // Estados del formulario
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -40,7 +40,8 @@ const Login = () => {
     setError("");
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      setLoading(false); // Nuevo: se desactiva loading si inicia sesión OK
+      if (onLoginSuccess) onLoginSuccess(); // Notificar al padre que se logueó correctamente
+      setLoading(false); // se desactiva loading si inicia sesión OK
     } catch (err) {
       setError("Correo o contraseña incorrectos");
       setLoading(false);

@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/Itinerario_TourChinaConLulu/static/css/main.fdc6444e.css",
-    "main.js": "/Itinerario_TourChinaConLulu/static/js/main.05fc2cdd.js",
+    "main.css": "/Itinerario_TourChinaConLulu/static/css/main.ae3fed98.css",
+    "main.js": "/Itinerario_TourChinaConLulu/static/js/main.c62617af.js",
     "static/js/453.0c655a2e.chunk.js": "/Itinerario_TourChinaConLulu/static/js/453.0c655a2e.chunk.js",
     "index.html": "/Itinerario_TourChinaConLulu/index.html",
-    "main.fdc6444e.css.map": "/Itinerario_TourChinaConLulu/static/css/main.fdc6444e.css.map",
-    "main.05fc2cdd.js.map": "/Itinerario_TourChinaConLulu/static/js/main.05fc2cdd.js.map",
+    "main.ae3fed98.css.map": "/Itinerario_TourChinaConLulu/static/css/main.ae3fed98.css.map",
+    "main.c62617af.js.map": "/Itinerario_TourChinaConLulu/static/js/main.c62617af.js.map",
     "453.0c655a2e.chunk.js.map": "/Itinerario_TourChinaConLulu/static/js/453.0c655a2e.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.fdc6444e.css",
-    "static/js/main.05fc2cdd.js"
+    "static/css/main.ae3fed98.css",
+    "static/js/main.c62617af.js"
   ]
 }

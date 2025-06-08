@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import TextField from "@mui/material/TextField";
-import { FaCalendarAlt } from "react-icons/fa";
+import { TextField } from "@mui/material";
+import { CalendarToday as CalendarTodayIcon } from "@mui/icons-material";
 
 const DateRangePicker = ({ onDateChange }) => {
   // Estado local para la fecha de inicio seleccionada
@@ -34,7 +34,7 @@ const DateRangePicker = ({ onDateChange }) => {
           htmlFor="start-date"
           className="flex items-center gap-2 text-sm font-semibold text-gray-800 mb-2"
         >
-          <FaCalendarAlt className="text-blue-600" />
+          <CalendarTodayIcon className="text-blue-600" />
           Fecha de inicio
         </label>
         <TextField
@@ -72,7 +72,7 @@ const DateRangePicker = ({ onDateChange }) => {
           htmlFor="end-date"
           className="flex items-center gap-2 text-sm font-semibold text-gray-800 mb-2"
         >
-          <FaCalendarAlt className="text-blue-600" />
+          <CalendarTodayIcon className="text-blue-600" />
           Fecha de fin
         </label>
         <TextField

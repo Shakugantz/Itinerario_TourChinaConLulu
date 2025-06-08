@@ -3,7 +3,7 @@ import AirportServiceSelector from "./AirportServiceSelector"; // Componente reu
 import airportsList from "../mock/airportsList"; // Lista de aeropuertos disponibles
 import airportServicePrices from "../mock/airportServicePrices"; // Precios por aeropuerto y transporte
 
-// Importa componentes de diseño de Material UI
+// Importa componentes de diseño y todos los íconos en una sola línea
 import {
   Card,
   CardContent,
@@ -15,17 +15,19 @@ import {
   Stack,
   Divider,
 } from "@mui/material";
-import AddCircleIcon from "@mui/icons-material/AddCircle";
-import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
-import DirectionsBusIcon from "@mui/icons-material/DirectionsBus";
-import LocalTaxiIcon from "@mui/icons-material/LocalTaxi";
-import AirportShuttleIcon from "@mui/icons-material/AirportShuttle";
+import {
+  AddCircle,
+  RemoveCircle,
+  DirectionsBus,
+  LocalTaxi,
+  AirportShuttle,
+} from "@mui/icons-material";
 
 // Diccionario de íconos visuales por tipo de transporte
 const transportIcons = {
-  van: <DirectionsBusIcon fontSize="large" color="primary" />, // Van turística
-  bus: <AirportShuttleIcon fontSize="large" color="secondary" />, // Autobús de lujo
-  taxi: <LocalTaxiIcon fontSize="large" sx={{ color: "#fbbf24" }} />, // Taxi personalizado
+  van: <DirectionsBus fontSize="large" color="primary" />, // Van turística
+  bus: <AirportShuttle fontSize="large" color="secondary" />, // Autobús de lujo
+  taxi: <LocalTaxi fontSize="large" sx={{ color: "#fbbf24" }} />, // Taxi personalizado
 };
 
 // Componente principal para seleccionar tipo de transporte, días y servicios al aeropuerto
@@ -81,7 +83,7 @@ const TransportSelector = ({
     if (selectedDays > 0) onDaysChange(selectedDays - 1);
   }, [selectedDays, onDaysChange]);
 
-  // Crea objeto de precios solo para envío, para mostrar precios junto al selector
+  // Crea objeto de precios solo para envío
   const envioPrices = useMemo(() => {
     const prices = airportServicePrices[transport?.id] || {};
     return Object.fromEntries(
@@ -89,7 +91,7 @@ const TransportSelector = ({
     );
   }, [transport?.id]);
 
-  // Crea objeto de precios solo para recojo, para mostrar precios junto al selector
+  // Crea objeto de precios solo para recojo
   const recojoPrices = useMemo(() => {
     const prices = airportServicePrices[transport?.id] || {};
     return Object.fromEntries(
@@ -105,11 +107,12 @@ const TransportSelector = ({
       <CardContent>
         {/* Cabecera: ícono, nombre del transporte, precio por día y controles de días */}
         <Stack
-          direction="row"
-          alignItems="center"
+          direction={{ xs: "column", sm: "row" }}
+          alignItems="flex-start"
           justifyContent="space-between"
           spacing={2}
           mb={2}
+          sx={{ flexWrap: { xs: "wrap", sm: "nowrap" } }}
         >
           <Stack direction="row" spacing={2} alignItems="center">
             {/* Ícono del tipo de transporte con Avatar MUI */}
@@ -125,20 +128,38 @@ const TransportSelector = ({
               {transportIcons[transport.icon] || "🚐"}
             </Avatar>
             <Box>
-              <Typography variant="h6" color="text.primary">
+              <Typography
+                variant="h6"
+                className="text-2xl uppercase tracking-tight bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 bg-clip-text text-transparent drop-shadow-lg"
+              >
                 {transport.name}
               </Typography>
+
               <Typography variant="body2" color="text.secondary">
                 ${transport.dailyPrice} por día
               </Typography>
             </Box>
           </Stack>
 
-          {/* Botones de incremento y decremento con íconos modernos */}
-          <Stack direction="row" alignItems="center" spacing={1}>
+          {/* Botones de incremento y decremento */}
+          <Stack
+            direction="row"
+            alignItems="center"
+            spacing={1}
+            sx={{
+              flexShrink: 0,
+              minWidth: 120,
+              justifyContent: "flex-end",
+              flexWrap: "nowrap",
+            }}
+          >
             <Tooltip title="Disminuir días">
-              <IconButton onClick={handleDecrement} color="error">
-                <RemoveCircleIcon fontSize="large" />
+              <IconButton
+                onClick={handleDecrement}
+                color="error"
+                sx={{ padding: 1.5, touchAction: "manipulation" }}
+              >
+                <RemoveCircle fontSize="large" />
               </IconButton>
             </Tooltip>
             <Typography
@@ -149,8 +170,12 @@ const TransportSelector = ({
               {selectedDays}
             </Typography>
             <Tooltip title="Aumentar días">
-              <IconButton onClick={handleIncrement} color="success">
-                <AddCircleIcon fontSize="large" />
+              <IconButton
+                onClick={handleIncrement}
+                color="primary"
+                sx={{ padding: 1.5, touchAction: "manipulation" }}
+              >
+                <AddCircle fontSize="large" />
               </IconButton>
             </Tooltip>
           </Stack>
@@ -158,7 +183,7 @@ const TransportSelector = ({
 
         <Divider sx={{ mb: 2 }} />
 
-        {/* Selectores para servicios de aeropuerto con precios personalizados */}
+        {/* Selectores de servicios al aeropuerto */}
         <Stack spacing={3}>
           <AirportServiceSelector
             label="Envío al aeropuerto"

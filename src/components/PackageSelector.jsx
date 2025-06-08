@@ -1,7 +1,9 @@
 import React from "react";
-import { Checkbox } from "@mui/material"; // Componente de checkbox de la librería Material UI
-import { FaBoxOpen } from "react-icons/fa"; // Ícono de caja abierta de FontAwesome
-import { MdLocationOn } from "react-icons/md"; // Ícono de ubicación de Material Design
+import { Checkbox } from "@mui/material"; // Componente de checkbox de Material UI
+import {
+  Inventory2 as Inventory2Icon,
+  LocationOn as LocationOnIcon,
+} from "@mui/icons-material";
 
 /**
  * Componente que muestra una cuadrícula de paquetes turísticos con casillas de verificación.
@@ -22,17 +24,17 @@ const PackageSelector = ({ paquetes, togglePaquete }) => {
             checked={paquetes.paquete1}
             onClick={(e) => e.stopPropagation()}
             onChange={() => togglePaquete("paquete1")}
-            sx={{ color: "#22c55e", "&.Mui-checked": { color: "#15803d" } }} // verde claro y verde oscuro
+            sx={{ color: "#22c55e", "&.Mui-checked": { color: "#15803d" } }}
           />
         </div>
 
         {/* Contenido visual del paquete */}
         <div className="flex items-center gap-3">
-          <FaBoxOpen className="text-3xl text-green-600" />
+          <Inventory2Icon className="text-3xl text-green-600 animate-bounce hover:scale-110 transition-transform" />
           <div>
             <h3 className="text-lg font-semibold text-gray-800">Paquete 1</h3>
             <p className="text-sm text-gray-600 flex items-center gap-1">
-              <MdLocationOn className="text-green-500" /> Destinos 1, 2 y 3
+              <LocationOnIcon className="text-green-500" /> Destinos 1, 2 y 3
             </p>
           </div>
         </div>
@@ -40,7 +42,7 @@ const PackageSelector = ({ paquetes, togglePaquete }) => {
 
       {/* Paquete 2 */}
       <div
-        className={`relative flex flex-col rounded-2xl border p-5 shadow-md transition-all hover:shadow-xl cursor-pointer bg-gradient-to-r from-violet-50 to-white ring-1 ring-violet-200`}
+        className="relative flex flex-col rounded-2xl border p-5 shadow-md transition-all hover:shadow-xl cursor-pointer bg-gradient-to-r from-violet-50 to-white ring-1 ring-violet-200"
         onClick={() => togglePaquete("paquete2")}
       >
         <div className="absolute top-3 right-3">
@@ -52,11 +54,11 @@ const PackageSelector = ({ paquetes, togglePaquete }) => {
           />
         </div>
         <div className="flex items-center gap-3">
-          <FaBoxOpen className="text-3xl text-violet-600" />
+          <Inventory2Icon className="text-3xl text-violet-600 animate-bounce hover:scale-110 transition-transform" />
           <div>
             <h3 className="text-lg font-semibold text-gray-800">Paquete 2</h3>
             <p className="text-sm text-gray-600 flex items-center gap-1">
-              <MdLocationOn className="text-violet-500" /> Destinos 6
+              <LocationOnIcon className="text-violet-500" /> Destinos 6
             </p>
           </div>
         </div>
@@ -64,7 +66,7 @@ const PackageSelector = ({ paquetes, togglePaquete }) => {
 
       {/* Paquete 3 */}
       <div
-        className={`relative flex flex-col rounded-2xl border p-5 shadow-md transition-all hover:shadow-xl cursor-pointer bg-gradient-to-r from-pink-50 to-white ring-1 ring-pink-200`}
+        className="relative flex flex-col rounded-2xl border p-5 shadow-md transition-all hover:shadow-xl cursor-pointer bg-gradient-to-r from-pink-50 to-white ring-1 ring-pink-200"
         onClick={() => togglePaquete("paquete3")}
       >
         <div className="absolute top-3 right-3">
@@ -76,11 +78,11 @@ const PackageSelector = ({ paquetes, togglePaquete }) => {
           />
         </div>
         <div className="flex items-center gap-3">
-          <FaBoxOpen className="text-3xl text-pink-600" />
+          <Inventory2Icon className="text-3xl text-pink-600 animate-bounce hover:scale-110 transition-transform" />
           <div>
             <h3 className="text-lg font-semibold text-gray-800">Paquete 3</h3>
             <p className="text-sm text-gray-600 flex items-center gap-1">
-              <MdLocationOn className="text-pink-500" /> Destinos 4 y 5
+              <LocationOnIcon className="text-pink-500" /> Destinos 4 y 5
             </p>
           </div>
         </div>
@@ -88,7 +90,7 @@ const PackageSelector = ({ paquetes, togglePaquete }) => {
 
       {/* Paquete 4 */}
       <div
-        className={`relative flex flex-col rounded-2xl border p-5 shadow-md transition-all hover:shadow-xl cursor-pointer bg-gradient-to-r from-yellow-50 to-white ring-1 ring-yellow-200`}
+        className="relative flex flex-col rounded-2xl border p-5 shadow-md transition-all hover:shadow-xl cursor-pointer bg-gradient-to-r from-yellow-50 to-white ring-1 ring-yellow-200"
         onClick={() => togglePaquete("paquete4")}
       >
         <div className="absolute top-3 right-3">
@@ -100,11 +102,11 @@ const PackageSelector = ({ paquetes, togglePaquete }) => {
           />
         </div>
         <div className="flex items-center gap-3">
-          <FaBoxOpen className="text-3xl text-yellow-600" />
+          <Inventory2Icon className="text-3xl text-yellow-600 animate-bounce hover:scale-110 transition-transform" />
           <div>
             <h3 className="text-lg font-semibold text-gray-800">Paquete 4</h3>
             <p className="text-sm text-gray-600 flex items-center gap-1">
-              <MdLocationOn className="text-yellow-500" /> Destinos 2, 3 y 11
+              <LocationOnIcon className="text-yellow-500" /> Destinos 2, 3 y 11
             </p>
           </div>
         </div>

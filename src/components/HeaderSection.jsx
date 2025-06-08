@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
-import AOS from "aos";
-import "aos/dist/aos.css";
-import { TravelExplore } from "@mui/icons-material";
+import AOS from "aos"; // Librería para animaciones al hacer scroll
+import "aos/dist/aos.css"; // Estilos de AOS
+import { TravelExplore } from "@mui/icons-material"; // Ícono de exploración de viaje
 
 const HeaderSection = () => {
   useEffect(() => {
@@ -10,25 +10,40 @@ const HeaderSection = () => {
 
   return (
     <div className="text-center mb-10 select-none" data-aos="fade-down">
-      {/* Contenedor de título e ícono */}
+      {/* Contenedor flexible para ícono y título, con wrap para que baje el texto en móvil */}
       <div
-        className="inline-flex items-center justify-center gap-3 mb-4"
+        className="flex flex-wrap items-center justify-center gap-3 mb-4"
         data-aos="zoom-in"
         data-aos-delay="200"
       >
-        {/* Ícono con animación flotante y glow */}
+        {/* Ícono animado */}
         <TravelExplore
-          className="text-cyan-300 animate-float drop-shadow-lg"
+          className="text-cyan-300 animate-float drop-shadow-lg flex-shrink-0"
           style={{ fontSize: "3rem" }}
         />
 
-        {/* Título con fuente personalizada, gradiente y animación glow */}
-        <h1 className="text-4xl md:text-5xl font-orbitron font-extrabold bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 bg-clip-text text-transparent uppercase tracking-wide animate-glow">
+        {/* Título principal:
+            - En móviles toma todo el ancho para que pueda hacer wrap y no se oculte
+            - Permite quiebre de palabra si es necesario para evitar overflow
+            - flex-grow para que tome el espacio restante
+            - min-w-0 para permitir reducción dentro del flex container */}
+        <h1
+          className="
+            w-full sm:w-auto
+            break-words min-w-0 flex-grow
+            text-3xl sm:text-4xl md:text-5xl
+            font-orbitron font-extrabold
+            bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500
+            bg-clip-text text-transparent
+            uppercase tracking-wide
+            animate-glow
+          "
+        >
           ViajeChinaConLulu
         </h1>
       </div>
 
-      {/* Subtítulo con estilo suave, fuente Poppins e ingreso animado */}
+      {/* Subtítulo responsive */}
       <p
         className="text-lg md:text-xl font-poppins italic text-gray-200 tracking-wide"
         data-aos="fade-up"

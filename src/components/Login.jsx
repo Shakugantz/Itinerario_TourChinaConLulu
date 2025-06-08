@@ -1,16 +1,24 @@
 import React, { useState } from "react";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../firebaseConfig";
-import { Email, Lock, LoginRounded } from "@mui/icons-material";
+import {
+  Email,
+  Lock,
+  Visibility,
+  VisibilityOff,
+  LoginRounded,
+} from "@mui/icons-material";
 import confetti from "canvas-confetti";
 
 const Login = () => {
+  // Estados del formulario
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false); // Visibilidad de contraseña
   const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false); // Estado para desactivar botón
+  const [loading, setLoading] = useState(false);
 
-  // Dispara una animación de confetti al escribir
+  // Lanza confetti al escribir en los inputs
   const handleConfetti = () => {
     confetti({
       particleCount: 20 + Math.floor(Math.random() * 30),
@@ -25,7 +33,7 @@ const Login = () => {
     });
   };
 
-  // Maneja el login al hacer submit
+  // Inicia sesión con Firebase Auth
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -38,12 +46,18 @@ const Login = () => {
     }
   };
 
+  // Alterna la visibilidad de la contraseña
+  const togglePasswordVisibility = () => {
+    setShowPassword((prev) => !prev);
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 px-4 relative">
       <div
         className="bg-white p-10 rounded-3xl shadow-2xl w-full max-w-md animate-fade-in"
         data-aos="zoom-in"
       >
+        {/* Título */}
         <h2
           className="text-3xl font-extrabold text-center text-gray-800 mb-6"
           data-aos="fade-down"
@@ -51,12 +65,15 @@ const Login = () => {
           Bienvenido de nuevo
         </h2>
 
+        {/* Formulario */}
         <form onSubmit={handleLogin} className="space-y-6" data-aos="fade-up">
+          {/* Input de correo */}
           <div>
             <label className="block mb-2 text-sm font-medium text-gray-700">
               Correo electrónico
             </label>
             <div className="relative">
+              {/* Icono de email */}
               <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
                 <Email />
               </span>
@@ -73,17 +90,21 @@ const Login = () => {
             </div>
           </div>
 
+          {/* Input de contraseña */}
           <div>
             <label className="block mb-2 text-sm font-medium text-gray-700">
               Contraseña
             </label>
             <div className="relative">
+              {/* Icono de candado */}
               <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
                 <Lock />
               </span>
+
+              {/* Campo de contraseña con visibilidad dinámica */}
               <input
-                type="password"
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 text-gray-800 font-semibold animate-glow"
+                type={showPassword ? "text" : "password"}
+                className="w-full pl-10 pr-10 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 text-gray-800 font-semibold animate-glow"
                 value={password}
                 onChange={(e) => {
                   setPassword(e.target.value);
@@ -91,9 +112,20 @@ const Login = () => {
                 }}
                 required
               />
+
+              {/* Botón de mostrar/ocultar contraseña */}
+              <button
+                type="button"
+                onClick={togglePasswordVisibility}
+                className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-purple-600"
+                aria-label="Mostrar contraseña"
+              >
+                {showPassword ? <VisibilityOff /> : <Visibility />}
+              </button>
             </div>
           </div>
 
+          {/* Mensaje de error */}
           {error && (
             <p
               className="text-red-500 text-sm text-center animate-pulse"
@@ -103,6 +135,7 @@ const Login = () => {
             </p>
           )}
 
+          {/* Botón de login */}
           <button
             type="submit"
             disabled={loading}
@@ -116,6 +149,7 @@ const Login = () => {
           </button>
         </form>
 
+        {/* Footer */}
         <p
           className="mt-6 text-sm text-center text-gray-500"
           data-aos="fade-up"

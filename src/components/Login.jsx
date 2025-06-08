@@ -40,6 +40,7 @@ const Login = () => {
     setError("");
     try {
       await signInWithEmailAndPassword(auth, email, password);
+      setLoading(false); // Nuevo: se desactiva loading si inicia sesión OK
     } catch (err) {
       setError("Correo o contraseña incorrectos");
       setLoading(false);

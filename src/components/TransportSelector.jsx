@@ -136,7 +136,7 @@ const TransportSelector = ({
               </Typography>
 
               <Typography variant="body2" color="text.secondary">
-                ${transport.dailyPrice} por día
+                ¥{transport.dailyPrice} por día
               </Typography>
             </Box>
           </Stack>

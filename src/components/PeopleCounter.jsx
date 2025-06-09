@@ -42,7 +42,10 @@ const PeopleCounter = ({ count, setCount }) => {
   };
 
   return (
-    <div className="w-full max-w-sm mx-auto px-4 py-5 bg-white shadow-md rounded-2xl border border-gray-200 relative overflow-hidden">
+    <div
+      data-aos="fade-up"
+      className="bg-gradient-to-br from-purple-100 via-white to-purple-200 shadow-lg p-6 rounded-2xl border border-purple-300"
+    >
       {/* Título con ícono de personas */}
       <div className="flex items-center justify-center mb-4">
         <Group className="text-blue-500 text-2xl mr-2 animate-bounce" />

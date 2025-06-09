@@ -12,7 +12,7 @@ import {
  */
 const PackageSelector = ({ paquetes, togglePaquete }) => {
   return (
-    <div className="grid gap-4 md:grid-cols-2">
+    <div className="grid gap-4 md:grid-cols-2 bg-gradient-to-br from-purple-100 via-white to-purple-200 shadow-lg p-6 rounded-2xl border border-purple-300">
       {/* Paquete 1 */}
       <div
         className="relative flex flex-col rounded-2xl border p-5 shadow-md transition-all hover:shadow-xl cursor-pointer bg-gradient-to-r from-green-50 to-white ring-1 ring-green-200"
@@ -107,6 +107,30 @@ const PackageSelector = ({ paquetes, togglePaquete }) => {
             <h3 className="text-lg font-semibold text-gray-800">Paquete 4</h3>
             <p className="text-sm text-gray-600 flex items-center gap-1">
               <LocationOnIcon className="text-yellow-500" /> Destinos 2, 3 y 11
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Paquete 5 */}
+      <div
+        className="relative flex flex-col rounded-2xl border p-5 shadow-md transition-all hover:shadow-xl cursor-pointer bg-gradient-to-r from-cyan-50 to-white ring-1 ring-blue-200"
+        onClick={() => togglePaquete("paquete5")}
+      >
+        <div className="absolute top-3 right-3">
+          <Checkbox
+            checked={paquetes.paquete5}
+            onClick={(e) => e.stopPropagation()}
+            onChange={() => togglePaquete("paquete5")}
+            sx={{ color: "#06b6d4", "&.Mui-checked": { color: "#0891b2" } }}
+          />
+        </div>
+        <div className="flex items-center gap-3">
+          <Inventory2Icon className="text-3xl text-cyan-600 animate-bounce hover:scale-110 transition-transform" />
+          <div>
+            <h3 className="text-lg font-semibold text-gray-800">Paquete 5</h3>
+            <p className="text-sm text-gray-600 flex items-center gap-1">
+              <LocationOnIcon className="text-cyan-500" /> Destinos 2 y 4
             </p>
           </div>
         </div>

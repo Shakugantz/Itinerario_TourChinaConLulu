@@ -9,12 +9,13 @@ import { InsightsOutlined } from "@mui/icons-material"; // Ícono moderno de est
  */
 const SummaryCard = ({ title, value }) => {
   return (
-    <div className="relative p-6 rounded-2xl overflow-hidden shadow-xl border border-blue-100 bg-gradient-to-br from-white via-blue-50 to-blue-100 hover:shadow-2xl transition-shadow duration-300 group">
+    <div className="relative p-6 rounded-2xl overflow-hidden shadow-xl bg-gradient-to-br from-purple-100 via-white to-purple-200 shadow-lg p-6 rounded-2xl border border-purple-300 group">
       {/* Brillo animado de fondo */}
       <div className="absolute -top-10 -right-10 w-32 h-32 bg-blue-200 opacity-20 rounded-full blur-3xl group-hover:scale-110 transition-transform duration-500"></div>
 
       {/* Encabezado: título e ícono */}
       <div className="flex items-center justify-between">
+        {/* Título reducido a text-xs para texto más pequeño */}
         <h4 className="text-sm font-medium text-gray-600 uppercase tracking-wide">
           {title}
         </h4>
@@ -22,9 +23,9 @@ const SummaryCard = ({ title, value }) => {
         <InsightsOutlined className="text-blue-400 text-lg group-hover:animate-pulse transition-transform" />
       </div>
 
-      {/* Valor principal con estilo impactante */}
-      <p className="mt-3 text-3xl font-extrabold text-blue-800 tracking-tight drop-shadow-sm">
-        ${value}
+      {/* Valor principal con tamaño reducido a text-2xl */}
+      <p className="mt-3 text-2xl font-extrabold text-blue-800 tracking-tight drop-shadow-sm">
+        ¥{value}
       </p>
 
       {/* Línea decorativa inferior */}

@@ -20,11 +20,11 @@ export const exportToExcel = (budget) => {
 export const exportToWord = (budget) => {
   const content = `
     Detalles del Presupuesto\n
-    Entradas: $${budget.entries}
-    Transporte: $${budget.transport}
-    Guia turistico: $${budget.guide}
-    Servicio aeropuerto: $${budget.airport}
-    Total estimado: $${budget.total}
+    Entradas: ¥${budget.entries}
+    Transporte: ¥${budget.transport}
+    Guia turistico: ¥${budget.guide}
+    Servicio aeropuerto: ¥${budget.airport}
+    Total estimado: ¥${budget.total}
   `;
 
   const blob = new Blob([content], {

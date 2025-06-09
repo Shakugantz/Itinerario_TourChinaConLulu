@@ -1,72 +1,87 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import DestinationCard from "./DestinationCard";
-import { AnimatePresence, motion } from "framer-motion"; // Librería para animaciones suaves
+import { AnimatePresence, motion } from "framer-motion"; // Animaciones suaves
 
 /**
  * Lista de destinos turísticos con opción de mostrar más o menos.
- * Aplica animaciones suaves al expandir o contraer la lista usando Framer Motion.
+ * Aplica animaciones al expandir o contraer la lista usando Framer Motion.
  */
 const DestinationList = ({
-  destinations, // Lista de todos los destinos disponibles
-  selectedDestinations, // IDs de destinos seleccionados manualmente
+  destinations, // Array con todos los destinos
+  selectedDestinations, // Array de IDs seleccionados manualmente
   toggleDestination, // Función para alternar selección individual
-  paquetes, // Estado de selección de paquetes (paquete1, paquete2, etc.)
-  paquete1Ids, // IDs de destinos que pertenecen al paquete 1
-  paquete2Ids, // IDs de destinos que pertenecen al paquete 2
-  paquete3Ids, // IDs de destinos que pertenecen al paquete 3
-  paquete4Ids, // IDs de destinos que pertenecen al paquete 4
-  isHighSeason, // Temporada alta o baja para cambiar el precio
+  paquetes, // Estado objeto de selección de paquetes (paquete1, paquete2, ...)
+  paquete1Ids, // IDs que pertenecen a paquete 1
+  paquete2Ids, // IDs que pertenecen a paquete 2
+  paquete3Ids, // IDs que pertenecen a paquete 3
+  paquete4Ids, // IDs que pertenecen a paquete 4
+  paquete5Ids, // IDs que pertenecen a paquete 5
+  isHighSeason, // Booleano para temporada alta o baja (afecta precio)
 }) => {
-  const [showAll, setShowAll] = useState(false); // Controla si se muestran todos los destinos o solo algunos
+  const [showAll, setShowAll] = useState(false); // Control para mostrar todos o solo algunos
 
-  const VISIBLE_COUNT = 6; // Número de destinos visibles por defecto
+  const VISIBLE_COUNT = 6; // Número visible por defecto
 
-  // Determina los destinos que deben mostrarse (todos o los primeros 6)
-  const displayedDestinations = showAll
-    ? destinations
-    : destinations.slice(0, VISIBLE_COUNT);
+  // Memoiza el arreglo de destinos mostrados para no recalcular en cada render
+  const displayedDestinations = useMemo(() => {
+    return showAll ? destinations : destinations.slice(0, VISIBLE_COUNT);
+  }, [showAll, destinations]);
 
-  // Asocia cada paquete a un color para las tarjetas
-  const paqueteColorMap = {
-    paquete1: "green",
-    paquete2: "violet",
-    paquete3: "pink",
-    paquete4: "yellow",
-  };
+  // Mapa de colores para paquetes (puede extenderse fácilmente)
+  const paqueteColorMap = useMemo(
+    () => ({
+      paquete1: "green",
+      paquete2: "violet",
+      paquete3: "pink",
+      paquete4: "yellow",
+      paquete5: "cyan",
+    }),
+    []
+  );
 
   /**
-   * Obtiene la clase de color correspondiente para un destino específico,
-   * solo si el paquete está activo y el destino pertenece a él.
+   * Devuelve el color correspondiente a un destino
+   * según si pertenece a un paquete activo.
    */
   const getColorClaseForDestino = (id) => {
-    if (paquetes.paquete1 && paquete1Ids.includes(id)) return "green";
-    if (paquetes.paquete2 && paquete2Ids.includes(id)) return "violet";
-    if (paquetes.paquete3 && paquete3Ids.includes(id)) return "pink";
-    if (paquetes.paquete4 && paquete4Ids.includes(id)) return "yellow";
-    return null; // Si no pertenece a ningún paquete activo
+    if (paquetes?.paquete1 && paquete1Ids?.includes(id))
+      return paqueteColorMap.paquete1;
+    if (paquetes?.paquete2 && paquete2Ids?.includes(id))
+      return paqueteColorMap.paquete2;
+    if (paquetes?.paquete3 && paquete3Ids?.includes(id))
+      return paqueteColorMap.paquete3;
+    if (paquetes?.paquete4 && paquete4Ids?.includes(id))
+      return paqueteColorMap.paquete4;
+    if (paquetes?.paquete5 && paquete5Ids?.includes(id))
+      return paqueteColorMap.paquete5;
+    return null;
   };
 
   /**
-   * Verifica si un destino está bloqueado por pertenecer a un paquete activo
-   * (para prevenir selección manual mientras un paquete está activo).
+   * Indica si un destino está bloqueado por estar en un paquete activo,
+   * para evitar selección manual cuando paquete está activo.
    */
   const isInActivePackage = (id) =>
-    (paquetes.paquete1 && paquete1Ids.includes(id)) ||
-    (paquetes.paquete2 && paquete2Ids.includes(id)) ||
-    (paquetes.paquete3 && paquete3Ids.includes(id)) ||
-    (paquetes.paquete4 && paquete4Ids.includes(id));
+    (paquetes?.paquete1 && paquete1Ids?.includes(id)) ||
+    (paquetes?.paquete2 && paquete2Ids?.includes(id)) ||
+    (paquetes?.paquete3 && paquete3Ids?.includes(id)) ||
+    (paquetes?.paquete4 && paquete4Ids?.includes(id)) ||
+    (paquetes?.paquete5 && paquete5Ids?.includes(id));
 
   return (
-    <div>
-      {/* Lista animada de destinos */}
+    <div
+      data-aos="fade-up"
+      className="bg-gradient-to-br from-purple-100 via-white to-purple-200 shadow-lg p-6 rounded-2xl border border-purple-300"
+    >
+      {/* Lista animada de destinos con Framer Motion */}
       <div className="space-y-3 overflow-hidden">
         <AnimatePresence initial={false}>
           {displayedDestinations.map((destination, idx) => (
             <motion.div
               key={destination.id}
-              initial={{ opacity: 0, y: 20 }} // Animación al aparecer
+              initial={{ opacity: 0, y: 20 }} // Animación entrada
               animate={{ opacity: 1, y: 0 }} // Estado visible
-              exit={{ opacity: 0, y: -20 }} // Animación al desaparecer
+              exit={{ opacity: 0, y: -20 }} // Animación salida
               transition={{ duration: 0.5, ease: "easeInOut" }}
             >
               <DestinationCard
@@ -87,13 +102,16 @@ const DestinationList = ({
         </AnimatePresence>
       </div>
 
-      {/* Botón para expandir o contraer la lista de destinos */}
+      {/* Botón para mostrar más o menos destinos */}
       {destinations.length > VISIBLE_COUNT && (
         <div className="mt-4 text-center">
           <button
-            onClick={() => setShowAll(!showAll)}
+            onClick={() => setShowAll((prev) => !prev)}
             className="bg-gradient-to-r from-[#6366f1] to-[#a855f7] text-white py-2 px-6 rounded-lg hover:bg-gradient-to-l transition-colors duration-300"
-            aria-expanded={showAll} // Atributo accesible que indica si la sección está expandida
+            aria-expanded={showAll}
+            aria-label={
+              showAll ? "Mostrar menos destinos" : "Mostrar más destinos"
+            }
           >
             {showAll ? "Mostrar menos" : "Mostrar más"}
           </button>

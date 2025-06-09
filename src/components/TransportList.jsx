@@ -24,7 +24,10 @@ const TransportList = ({
   return (
     <section>
       {/* Lista animada de transportes */}
-      <div className="space-y-3 overflow-hidden">
+      <div
+        data-aos="fade-up"
+        className="bg-gradient-to-br from-purple-100 via-white to-purple-200 shadow-lg p-6 rounded-2xl border border-purple-300"
+      >
         <AnimatePresence initial={false}>
           {displayedTransports.map((transport) => (
             <motion.div

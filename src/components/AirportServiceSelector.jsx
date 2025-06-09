@@ -35,7 +35,7 @@ const AirportServiceSelector = ({
     {/* Muestra el precio si hay un valor seleccionado y tiene precio mayor a 0 */}
     {value && airportPrices?.[value] > 0 && (
       <p className="text-sm text-blue-600 mt-1 font-medium">
-        Precio: ${airportPrices[value]}
+        Precio: ¥{airportPrices[value]}
       </p>
     )}
   </div>

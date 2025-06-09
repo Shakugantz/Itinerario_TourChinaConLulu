@@ -15,6 +15,7 @@ import AnimatedBackground from "./components/layout/AnimatedBackground";
 import HeaderSection from "./components/HeaderSection";
 import DestinationList from "./components/DestinationList";
 import Login from "./components/Login";
+import ExtraCostsCard from "./components/ExtraCostsCard";
 import BudgetPopup from "./components/BudgetPopup";
 import { auth } from "./firebaseConfig";
 import { onAuthStateChanged, signOut } from "firebase/auth";
@@ -27,6 +28,7 @@ const paquete1Ids = [1, 2, 3];
 const paquete2Ids = [6];
 const paquete3Ids = [4, 5];
 const paquete4Ids = [2, 3, 11];
+const paquete5Ids = [2, 4];
 
 const App = () => {
   // Estado de autenticación de usuario
@@ -34,6 +36,7 @@ const App = () => {
   // Estado que indica si el usuario hizo clic en "Iniciar sesión"
   const [loginManuallyConfirmed, setLoginManuallyConfirmed] = useState(false);
 
+  // Inicializa las animaciones AOS una sola vez al montar el componente
   useEffect(() => {
     AOS.init({ duration: 1000 });
   }, []);
@@ -56,6 +59,7 @@ const App = () => {
     paquete2: false,
     paquete3: false,
     paquete4: false,
+    paquete5: false,
   });
   // Estado para días que se usará cada tipo de transporte
   const [transportDays, setTransportDays] = useState({});
@@ -71,6 +75,11 @@ const App = () => {
   // Estado para controlar el Popup de presupuesto
   const [isPopupOpen, setIsPopupOpen] = useState(false);
 
+  // --- Importante:
+  // Los costos adicionales y costos restantes se almacenan como strings para permitir edición sin forzar 0 ---
+  const [extraCosts, setExtraCosts] = useState("0"); // Costos adicionales (string para input)
+  const [remainingBudget, setRemainingBudget] = useState("0"); // Costos restantes (string para input)
+
   // Sincroniza la selección de destinos en base a los paquetes activados
   useEffect(() => {
     const newSelected = new Set();
@@ -80,6 +89,7 @@ const App = () => {
     if (paquetes.paquete2) paquete2Ids.forEach((id) => newSelected.add(id));
     if (paquetes.paquete3) paquete3Ids.forEach((id) => newSelected.add(id));
     if (paquetes.paquete4) paquete4Ids.forEach((id) => newSelected.add(id));
+    if (paquetes.paquete5) paquete5Ids.forEach((id) => newSelected.add(id));
 
     // Conjunto de destinos que deben eliminarse si su paquete fue desactivado y no pertenecen a otros paquetes activos
     const allPaqueteIds = {
@@ -87,12 +97,14 @@ const App = () => {
       paquete2: paquete2Ids,
       paquete3: paquete3Ids,
       paquete4: paquete4Ids,
+      paquete5: paquete5Ids,
     };
 
-    // Recorrer todos los paquetes
+    // Si un paquete se desactiva, elimina destinos no incluidos en otros paquetes
     Object.entries(allPaqueteIds).forEach(([paqueteKey, ids]) => {
       if (!paquetes[paqueteKey]) {
         ids.forEach((id) => {
+          // Verifica si ese destino sigue incluido en otro paquete activo
           const stillIncluded = Object.entries(allPaqueteIds).some(
             ([otherKey, otherIds]) =>
               otherKey !== paqueteKey &&
@@ -128,13 +140,15 @@ const App = () => {
 
   // Alterna la selección individual de un destino (solo si no está en paquete)
   const toggleDestination = (destinationId) => {
+    // No permite quitar destinos que estén en paquete activo (para evitar inconsistencias)
     if (
       (paquetes.paquete1 && paquete1Ids.includes(destinationId)) ||
       (paquetes.paquete2 && paquete2Ids.includes(destinationId)) ||
       (paquetes.paquete3 && paquete3Ids.includes(destinationId)) ||
-      (paquetes.paquete4 && paquete4Ids.includes(destinationId))
+      (paquetes.paquete4 && paquete4Ids.includes(destinationId)) ||
+      (paquetes.paquete5 && paquete5Ids.includes(destinationId))
     )
-      return; // No permite quitar destinos que estén en paquete activo
+      return;
 
     setSelectedDestinations((prev) =>
       prev.includes(destinationId)
@@ -192,13 +206,28 @@ const App = () => {
       0
     );
 
-    // Retorna objeto con todos los totales y total general
+    // Convierte costos adicionales y costos restantes de string a número para sumar/restar
+    const extraCostsNum = Number(extraCosts) || 0;
+    const remainingBudgetNum = Number(remainingBudget) || 0;
+
+    // Calcula el total final del presupuesto
+    const total =
+      entries +
+      transport +
+      guide +
+      airport +
+      extraCostsNum -
+      remainingBudgetNum;
+
+    // Retorna objeto con todos los valores calculados
     return {
       entries,
       transport,
       guide,
       airport,
-      total: entries + transport + guide + airport,
+      extraCosts: extraCostsNum,
+      remainingBudget: remainingBudgetNum,
+      total,
     };
   }, [
     selectedDestinations,
@@ -207,6 +236,8 @@ const App = () => {
     transportDays,
     guideDays,
     airportServicePricesByTransport,
+    extraCosts,
+    remainingBudget,
   ]);
 
   // Mostrar login hasta que el usuario confirme manualmente que desea iniciar sesión
@@ -273,6 +304,7 @@ const App = () => {
                 paquete2Ids={paquete2Ids}
                 paquete3Ids={paquete3Ids}
                 paquete4Ids={paquete4Ids}
+                paquete5Ids={paquete5Ids}
                 isHighSeason={isHighSeason}
               />
             </Section>
@@ -295,11 +327,20 @@ const App = () => {
                 guidePrices={guidePrices}
               />
             </Section>
+            {/* Sección costos extras */}
+            <Section title="Costos Manuales">
+              <ExtraCostsCard
+                extraCosts={extraCosts}
+                setExtraCosts={setExtraCosts}
+                remainingBudget={remainingBudget}
+                setRemainingBudget={setRemainingBudget}
+              />
+            </Section>
           </div>
 
           {/* Columna derecha con resumen y confirmación */}
           <div className="space-y-4">
-            <div className="bg-white p-6 rounded-xl shadow-sm sticky top-4 max-w-full">
+            <div className="bg-white p-6 rounded-xl shadow-sm sticky top-0 max-w-full">
               <h2 className="text-xl font-semibold mb-4 text-gray-900">
                 Resumen del presupuesto
               </h2>
@@ -319,6 +360,14 @@ const App = () => {
                 <SummaryCard
                   title="Servicio aeropuerto"
                   value={`${budget.airport.toLocaleString()}`}
+                />
+                <SummaryCard
+                  title="Costos adicionales"
+                  value={`${budget.extraCosts.toLocaleString()}`}
+                />
+                <SummaryCard
+                  title="Costos restantes"
+                  value={`${budget.remainingBudget.toLocaleString()}`}
                 />
                 {/* Total general */}
                 <div className="pt-4 border-t border-gray-200">

@@ -1,11 +1,13 @@
 import React, { useMemo } from "react";
-import { Man as ManIcon } from "@mui/icons-material";
+import { Man as ManIcon, AddCircle, RemoveCircle } from "@mui/icons-material";
+import { Typography, IconButton, Tooltip, Stack } from "@mui/material";
 
 const GuideSelector = ({
   peopleCount,
   selectedDays,
   onDaysChange,
   guidePrices,
+  maxDays = 30, // límite máximo de días con valor por defecto
 }) => {
   const dailyRate = useMemo(() => {
     const rate = guidePrices.find(
@@ -14,49 +16,108 @@ const GuideSelector = ({
     return rate ? rate.dailyRate : 0;
   }, [peopleCount, guidePrices]);
 
-  const handleToggle = () => {
-    onDaysChange(selectedDays > 0 ? 0 : 1);
+  const handleIncrement = () => {
+    if (selectedDays < maxDays) {
+      onDaysChange(selectedDays + 1);
+    }
+  };
+
+  const handleDecrement = () => {
+    if (selectedDays > 0) {
+      onDaysChange(selectedDays - 1);
+    }
   };
 
   return (
-    <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-200 hover:shadow-2xl transition-shadow duration-300">
-      {/* Header con ícono y texto */}
-      <div className="flex items-center justify-between mb-5">
-        <div className="flex items-center gap-4">
-          <div className="p-3 rounded-full bg-blue-100 text-blue-600 shadow-md shadow-blue-300/50">
-            <ManIcon className="text-3xl" />
-          </div>
+    <div
+      data-aos="fade-up"
+      className="bg-gradient-to-br from-purple-100 via-white to-purple-200 shadow-lg p-6 rounded-2xl border border-purple-300"
+    >
+      <div className="flex items-center gap-4 mb-5 flex-wrap">
+        <div className="p-3 rounded-full bg-blue-100 text-blue-600 shadow-md shadow-blue-300/50">
+          <ManIcon className="text-3xl" />
+        </div>
+        <div className="min-w-0">
           <p className="text-lg font-semibold text-gray-800">
-            {selectedDays > 0
-              ? "Guía profesional activado para 1 día"
-              : "¿Quieres un guía profesional?"}
+            ¿Quieres un guía profesional?
+          </p>
+          <p className="text-sm text-gray-600">
+            Usa los botones para seleccionar los días
           </p>
         </div>
-
-        {/* Switch personalizado */}
-        <label className="relative inline-flex items-center cursor-pointer">
-          <input
-            type="checkbox"
-            className="sr-only peer"
-            checked={selectedDays > 0}
-            onChange={handleToggle}
-          />
-          <div className="w-12 h-7 bg-gray-300 rounded-full peer-checked:bg-blue-600 transition-colors duration-300"></div>
-          <div className="absolute left-1 top-1 bg-white w-5 h-5 rounded-full shadow-md transition-transform duration-300 peer-checked:translate-x-5"></div>
-        </label>
       </div>
 
-      {/* Info de tarifas solo si está seleccionado */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <span className="text-gray-700 font-medium">Días seleccionados:</span>
+
+        <Stack
+          direction="row"
+          alignItems="center"
+          spacing={1}
+          sx={{
+            flexWrap: "wrap",
+            justifyContent: "center",
+          }}
+        >
+          <Tooltip title="Disminuir días">
+            <span>
+              {/* Span envuelve el botón para evitar warning al usar disabled dentro de Tooltip */}
+              <IconButton
+                onClick={handleDecrement}
+                color="error"
+                sx={{ padding: 1.5, touchAction: "manipulation" }}
+                aria-label="Disminuir días"
+                disabled={selectedDays === 0}
+              >
+                <RemoveCircle fontSize="large" />
+              </IconButton>
+            </span>
+          </Tooltip>
+
+          <Typography
+            variant="h6"
+            color="text.primary"
+            sx={{
+              minWidth: 30,
+              textAlign: "center",
+              fontWeight: "bold",
+              px: 1,
+            }}
+          >
+            {selectedDays}
+          </Typography>
+
+          <Tooltip
+            title={
+              selectedDays < maxDays ? "Aumentar días" : "Máximo alcanzado"
+            }
+          >
+            <span>
+              <IconButton
+                onClick={handleIncrement}
+                color="primary"
+                sx={{ padding: 1.5, touchAction: "manipulation" }}
+                aria-label="Aumentar días"
+                disabled={selectedDays >= maxDays}
+              >
+                <AddCircle fontSize="large" />
+              </IconButton>
+            </span>
+          </Tooltip>
+        </Stack>
+      </div>
+
       {selectedDays > 0 && (
-        <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-xl text-blue-900 font-medium shadow-inner">
+        <div className="mt-5 p-4 bg-blue-50 border border-blue-200 rounded-xl text-blue-900 font-medium shadow-inner">
           <p>
             Tarifa diaria para{" "}
             <span className="font-semibold">{peopleCount}</span> persona
             {peopleCount !== 1 ? "s" : ""}
           </p>
-          <p className="text-2xl mt-1">${dailyRate.toLocaleString()}</p>
+          <p className="text-2xl mt-1">¥{dailyRate.toLocaleString()}</p>
           <p className="mt-1 text-sm text-blue-700">
-            Total guía: <strong>${dailyRate.toLocaleString()}</strong>
+            Total guía ({selectedDays} día{selectedDays !== 1 ? "s" : ""}):{" "}
+            <strong>¥{(dailyRate * selectedDays).toLocaleString()}</strong>
           </p>
         </div>
       )}

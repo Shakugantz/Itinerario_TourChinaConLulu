@@ -1,5 +1,5 @@
 // ───── Librerías externas ─────
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState } from "react";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import { Logout } from "@mui/icons-material";
@@ -35,8 +35,8 @@ import useBudget from "./hooks/useBudget";
 
 const App = () => {
   // ───── Autenticación ─────
-  const { user, logout } = useAuth(); // Obtiene el usuario autenticado y función de logout
-  const [loginManuallyConfirmed, setLoginManuallyConfirmed] = useState(false); // Confirmación manual del login
+  const { user, logout } = useAuth();
+  const [loginManuallyConfirmed, setLoginManuallyConfirmed] = useState(false);
 
   // ───── Costos adicionales ─────
   const [extraCosts, setExtraCosts] = useState("0");
@@ -49,35 +49,40 @@ const App = () => {
     paqueteIds,
     selectedDestinations,
     toggleDestination,
-  } = usePaquetesLogic(); // Lógica de paquetes y destinos
+  } = usePaquetesLogic();
 
   const {
     transportDays,
     updateTransportDays,
     airportServicePricesByTransport,
     handleAirportServiceChange,
-  } = useTransport(); // Lógica de transporte y servicios de aeropuerto
+  } = useTransport();
 
-  const { guideDays, setGuideDays } = useGuide(); // Lógica de días para guía turístico
+  const { guideDays, setGuideDays } = useGuide();
 
-  const { isPopupOpen, openPopup, closePopup } = useUI(); // Estado del popup de presupuesto
+  const { isPopupOpen, openPopup, closePopup } = useUI();
 
-  const [selectedMonth, setSelectedMonth] = useState(""); // Mes seleccionado desde el rango de fechas
+  const [selectedMonth, setSelectedMonth] = useState("");
 
-  const isHighSeason = useSeason(selectedMonth); // Determina si el mes está en temporada alta
+  const isHighSeason = useSeason(selectedMonth);
 
-  const { peopleCount, setPeopleCount } = usePeopleCount(); // Contador de personas
+  const { peopleCount, setPeopleCount } = usePeopleCount();
 
-  const [manualGuide, setManualGuide] = useState(null); // Estado para guía manual
+  const [manualGuide, setManualGuide] = useState(null);
+  const [isManualGuideActive, setIsManualGuideActive] = useState(false);
 
-  const [isManualGuideActive, setIsManualGuideActive] = useState(false); // Establecer precio para el guia
+  // ───── Estado para precios manuales de transporte ─────
+  // Cambiamos de un único precio a un objeto que almacena precios por transporteId
+  const [manualTransportPrices, setManualTransportPrices] = useState({});
+  // También estado para saber si el modo manual está activo (puede ser global o individual)
+  const [isManualTransportActive, setIsManualTransportActive] = useState(false);
 
   // ───── Inicializar animaciones AOS al montar ─────
   useEffect(() => {
     AOS.init({ duration: 1000 });
-  }, []); // Este useEffect se ejecuta solo una vez, sin problemas de ciclo infinito
+  }, []);
 
-  // ───── Cálculo del presupuesto total usando hook personalizado ─────
+  // ───── Cálculo del presupuesto total ─────
   const budget = useBudget({
     selectedDestinations,
     isHighSeason,
@@ -88,17 +93,17 @@ const App = () => {
     extraCosts,
     remainingBudget,
     manualGuide,
-    isManualGuideActive, // <--- Aquí se pasa
+    isManualGuideActive,
+    manualTransportPrices, // <-- Cambiado para pasar el objeto con precios manuales por transporte
+    isManualTransportActive,
   });
 
-  // ───── Mostrar login si el usuario no está autenticado o aún no confirma manualmente ─────
   if (!user || !loginManuallyConfirmed) {
     return <Login onLoginSuccess={() => setLoginManuallyConfirmed(true)} />;
   }
 
   return (
     <div className="min-h-screen relative py-8 px-4 sm:px-6 lg:px-8">
-      {/* Botón flotante para cerrar sesión */}
       <button
         onClick={logout}
         className="fixed top-6 right-6 z-50 bg-gradient-to-r from-red-500 via-red-600 to-red-700 
@@ -109,17 +114,13 @@ const App = () => {
         <Logout className="w-6 h-6 text-yellow-300 group-hover:animate-bounce" />
       </button>
 
-      {/* Fondo animado */}
       <AnimatedBackground />
 
       <div className="max-w-4xl mx-auto p-8">
-        {/* Título principal */}
         <HeaderSection />
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Columna izquierda con formularios principales */}
           <div className="lg:col-span-2 space-y-6">
-            {/* Selección de fechas del viaje */}
             <Section title="Fechas del viaje">
               <div className="flex flex-col items-center">
                 <DateRangePicker onDateChange={setSelectedMonth} />
@@ -133,12 +134,10 @@ const App = () => {
               </div>
             </Section>
 
-            {/* Número de personas */}
             <Section title="Número de personas">
               <PeopleCounter count={peopleCount} setCount={setPeopleCount} />
             </Section>
 
-            {/* Selector de paquetes */}
             <Section title="Paquetes">
               <PackageSelector
                 paquetes={paquetes}
@@ -146,7 +145,6 @@ const App = () => {
               />
             </Section>
 
-            {/* Lugares a visitar */}
             <Section title="Lugares a visitar">
               <DestinationList
                 destinations={destinations}
@@ -162,29 +160,30 @@ const App = () => {
               />
             </Section>
 
-            {/* Transporte */}
             <Section title="Transporte">
               <TransportList
                 transportDays={transportDays}
                 updateTransportDays={updateTransportDays}
                 handleAirportServiceChange={handleAirportServiceChange}
+                manualTransportPrices={manualTransportPrices} // <-- Nuevo prop
+                setManualTransportPrices={setManualTransportPrices} // <-- Nuevo prop
+                isManualTransportActive={isManualTransportActive} // <-- Nuevo prop
+                setIsManualTransportActive={setIsManualTransportActive} // <-- Nuevo prop
               />
             </Section>
 
-            {/* Guía turístico */}
             <Section title="Guía turístico">
               <GuideSelector
                 peopleCount={peopleCount}
                 selectedDays={guideDays}
                 onDaysChange={setGuideDays}
                 guidePrices={guidePrices}
-                setManualGuide={setManualGuide} // Aquí pasas la función setManualGuide
-                isManualGuideActive={isManualGuideActive} // <-- Nuevo
-                setIsManualGuideActive={setIsManualGuideActive} // <-- Nuevo
+                setManualGuide={setManualGuide}
+                isManualGuideActive={isManualGuideActive}
+                setIsManualGuideActive={setIsManualGuideActive}
               />
             </Section>
 
-            {/* Costos adicionales manuales */}
             <Section title="Costos Manuales">
               <ExtraCostsCard
                 extraCosts={extraCosts}
@@ -195,7 +194,6 @@ const App = () => {
             </Section>
           </div>
 
-          {/* Columna derecha con resumen y botón de confirmación */}
           <div className="space-y-4">
             <div className="bg-white p-6 rounded-xl shadow-sm sticky top-0 max-w-full">
               <h2 className="text-xl font-semibold mb-4 text-gray-900">
@@ -227,7 +225,6 @@ const App = () => {
                   value={`${budget.remainingBudget.toLocaleString()}`}
                 />
 
-                {/* Totales convertidos a diferentes monedas */}
                 <div className="pt-4 border-t border-gray-200">
                   <div className="flex justify-between items-center">
                     <h3 className="font-medium text-gray-900 text-sm">
@@ -260,7 +257,6 @@ const App = () => {
                 </div>
               </div>
 
-              {/* Botón para abrir popup de confirmación */}
               <div className="mt-4">
                 <button
                   onClick={openPopup}
@@ -274,7 +270,6 @@ const App = () => {
         </div>
       </div>
 
-      {/* Componente emergente para mostrar presupuesto final */}
       <BudgetPopup isOpen={isPopupOpen} onClose={closePopup} budget={budget} />
     </div>
   );

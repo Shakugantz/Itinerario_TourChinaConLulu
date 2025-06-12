@@ -1,9 +1,7 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
-import AirportServiceSelector from "./AirportServiceSelector"; // Componente reutilizable para seleccionar aeropuerto
-import airportsList from "../mock/airportsList"; // Lista de aeropuertos disponibles
-import airportServicePrices from "../mock/airportServicePrices"; // Precios por aeropuerto y transporte
-
-// Importa componentes de diseño y todos los íconos en una sola línea
+import AirportServiceSelector from "./AirportServiceSelector";
+import airportsList from "../mock/airportsList";
+import airportServicePrices from "../mock/airportServicePrices";
 import {
   Card,
   CardContent,
@@ -14,6 +12,9 @@ import {
   Tooltip,
   Stack,
   Divider,
+  Checkbox,
+  FormControlLabel,
+  TextField,
 } from "@mui/material";
 import {
   AddCircle,
@@ -23,37 +24,51 @@ import {
   AirportShuttle,
 } from "@mui/icons-material";
 
-// Diccionario de íconos visuales por tipo de transporte
+// Iconos según tipo de transporte
 const transportIcons = {
-  van: <DirectionsBus fontSize="large" color="primary" />, // Van turística
-  bus: <AirportShuttle fontSize="large" color="secondary" />, // Autobús de lujo
-  taxi: <LocalTaxi fontSize="large" sx={{ color: "#fbbf24" }} />, // Taxi personalizado
+  van: <DirectionsBus fontSize="large" color="primary" />,
+  bus: <AirportShuttle fontSize="large" color="secondary" />,
+  taxi: <LocalTaxi fontSize="large" sx={{ color: "#fbbf24" }} />,
 };
 
-// Componente principal para seleccionar tipo de transporte, días y servicios al aeropuerto
 const TransportSelector = ({
-  transport, // Objeto del transporte seleccionado
-  selectedDays, // Número de días seleccionados por el usuario
-  onDaysChange, // Función que actualiza el número de días
-  onAirportServiceChange, // Función que notifica los cambios en servicios aeropuerto
+  transport,
+  selectedDays,
+  onDaysChange,
+  onAirportServiceChange,
+  manualInfo = { isManual: false, price: "" }, // Recibe datos manuales del padre
 }) => {
-  // Hooks de estado para guardar aeropuertos seleccionados
   const [envioAirport, setEnvioAirport] = useState("");
   const [recojoAirport, setRecojoAirport] = useState("");
 
-  // Calcula el precio de envío al aeropuerto usando useMemo para optimización
+  // Estado local de precio manual
+  const [useManualPrice, setUseManualPrice] = useState(false);
+  const [manualPrice, setManualPrice] = useState("");
+
+  // Sincronización con prop externa manualInfo
+  useEffect(() => {
+    if (
+      manualInfo.isManual !== useManualPrice ||
+      manualInfo.price !== manualPrice
+    ) {
+      setUseManualPrice(manualInfo.isManual || false);
+      setManualPrice(manualInfo.price || "");
+    }
+  }, [manualInfo]);
+
+  // Cálculo de precio envío
   const envioPrice = useMemo(() => {
     if (!envioAirport || !transport?.id) return 0;
     return airportServicePrices[transport.id]?.[envioAirport]?.envio || 0;
   }, [envioAirport, transport?.id]);
 
-  // Calcula el precio de recojo del aeropuerto
+  // Cálculo de precio recojo
   const recojoPrice = useMemo(() => {
     if (!recojoAirport || !transport?.id) return 0;
     return airportServicePrices[transport.id]?.[recojoAirport]?.recojo || 0;
   }, [recojoAirport, transport?.id]);
 
-  // Efecto que notifica cambios en selección de aeropuertos y sus precios
+  // Comunicación al padre de cambios
   useEffect(() => {
     if (onAirportServiceChange && transport?.id) {
       onAirportServiceChange({
@@ -62,6 +77,8 @@ const TransportSelector = ({
         recojoAirport,
         envioPrice,
         recojoPrice,
+        useManualPrice,
+        manualPrice: parseFloat(manualPrice) || 0,
       });
     }
   }, [
@@ -70,20 +87,22 @@ const TransportSelector = ({
     envioPrice,
     recojoPrice,
     transport?.id,
+    useManualPrice,
+    manualPrice,
     onAirportServiceChange,
   ]);
 
-  // Incrementar número de días (máximo 30)
+  // +1 día
   const handleIncrement = useCallback(() => {
     if (selectedDays < 30) onDaysChange(selectedDays + 1);
   }, [selectedDays, onDaysChange]);
 
-  // Disminuir número de días (mínimo 0)
+  // -1 día
   const handleDecrement = useCallback(() => {
     if (selectedDays > 0) onDaysChange(selectedDays - 1);
   }, [selectedDays, onDaysChange]);
 
-  // Crea objeto de precios solo para envío
+  // Precios dropdown envío
   const envioPrices = useMemo(() => {
     const prices = airportServicePrices[transport?.id] || {};
     return Object.fromEntries(
@@ -91,7 +110,7 @@ const TransportSelector = ({
     );
   }, [transport?.id]);
 
-  // Crea objeto de precios solo para recojo
+  // Precios dropdown recojo
   const recojoPrices = useMemo(() => {
     const prices = airportServicePrices[transport?.id] || {};
     return Object.fromEntries(
@@ -99,23 +118,21 @@ const TransportSelector = ({
     );
   }, [transport?.id]);
 
-  // Si no hay transporte válido, no renderiza nada
   if (!transport || !transport.id) return null;
 
   return (
     <Card elevation={4} sx={{ mb: 3, backgroundColor: "#f9fafb" }}>
       <CardContent>
-        {/* Cabecera: ícono, nombre del transporte, precio por día y controles de días */}
+        {/* CABECERA: Avatar, nombre y precio por día */}
         <Stack
           direction={{ xs: "column", sm: "row" }}
           alignItems="flex-start"
           justifyContent="space-between"
           spacing={2}
           mb={2}
-          sx={{ flexWrap: { xs: "wrap", sm: "nowrap" } }}
         >
+          {/* Info del transporte */}
           <Stack direction="row" spacing={2} alignItems="center">
-            {/* Ícono del tipo de transporte con Avatar MUI */}
             <Avatar
               sx={{
                 bgcolor: "white",
@@ -134,46 +151,36 @@ const TransportSelector = ({
               >
                 {transport.name}
               </Typography>
-
               <Typography variant="body2" color="text.secondary">
                 ¥{transport.dailyPrice} por día
               </Typography>
             </Box>
           </Stack>
 
-          {/* Botones de incremento y decremento */}
+          {/* Botones de control de días */}
           <Stack
             direction="row"
             alignItems="center"
             spacing={1}
-            sx={{
-              flexShrink: 0,
-              minWidth: 120,
-              justifyContent: "flex-end",
-              flexWrap: "nowrap",
-            }}
+            sx={{ minWidth: 120, justifyContent: "flex-end" }}
           >
             <Tooltip title="Disminuir días">
               <IconButton
                 onClick={handleDecrement}
                 color="error"
-                sx={{ padding: 1.5, touchAction: "manipulation" }}
+                sx={{ padding: 1.5 }}
               >
                 <RemoveCircle fontSize="large" />
               </IconButton>
             </Tooltip>
-            <Typography
-              variant="h6"
-              color="text.primary"
-              sx={{ minWidth: 30, textAlign: "center" }}
-            >
+            <Typography variant="h6" sx={{ minWidth: 30, textAlign: "center" }}>
               {selectedDays}
             </Typography>
             <Tooltip title="Aumentar días">
               <IconButton
                 onClick={handleIncrement}
                 color="primary"
-                sx={{ padding: 1.5, touchAction: "manipulation" }}
+                sx={{ padding: 1.5 }}
               >
                 <AddCircle fontSize="large" />
               </IconButton>
@@ -181,9 +188,55 @@ const TransportSelector = ({
           </Stack>
         </Stack>
 
-        <Divider sx={{ mb: 2 }} />
+        {/* Mostrar checkbox e input en fila independiente si hay días seleccionados */}
+        {selectedDays > 0 && (
+          <Stack spacing={2} mt={2}>
+            {/* Checkbox para activar precio manual */}
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={useManualPrice}
+                  onChange={(e) => setUseManualPrice(e.target.checked)}
+                />
+              }
+              label="Usar precio manual"
+            />
 
-        {/* Selectores de servicios al aeropuerto */}
+            {/* Input para escribir precio manual */}
+            {useManualPrice && (
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <TextField
+                  label="Precio manual (¥)"
+                  type="number"
+                  size="small"
+                  value={manualPrice}
+                  onChange={(e) => setManualPrice(e.target.value)}
+                  sx={{
+                    width: 180,
+                    bgcolor: "#ffffff",
+                    boxShadow: 3,
+                    borderRadius: 2,
+                    "& input": {
+                      textAlign: "center",
+                      fontWeight: "bold",
+                    },
+                  }}
+                  inputProps={{ min: 0 }}
+                />
+              </Box>
+            )}
+          </Stack>
+        )}
+
+        <Divider sx={{ my: 3 }} />
+
+        {/* Selectores de aeropuerto */}
         <Stack spacing={3}>
           <AirportServiceSelector
             label="Envío al aeropuerto"

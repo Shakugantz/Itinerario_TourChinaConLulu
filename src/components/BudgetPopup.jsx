@@ -60,7 +60,13 @@ const BudgetPopup = ({ isOpen, onClose, budget }) => {
           <li>🧾 Costos adicionales: ¥{budget.extraCosts}</li>
           <li>💼 Costos restantes: ¥{budget.remainingBudget}</li>
           <li className="font-bold text-lg">
-            💰 Total estimado: ¥{budget.total}
+            💰 Total estimado en CNY: ¥{budget.totalCNY}
+          </li>
+          <li className="font-bold text-lg">
+            💰 Total estimado en USD: ${budget.totalUSD}
+          </li>
+          <li className="font-bold text-lg">
+            💰 Total estimado en EUR: €{budget.totalEUR}
           </li>
         </ul>
 

@@ -29,14 +29,16 @@ const getFormattedDateTime = () => {
 export const exportToExcel = (budget) => {
   // Creamos un arreglo con encabezados y valores
   const data = [
-    ["Concepto", "Monto (CNY)"], // Encabezados de columna
+    ["Concepto", "Monto"], // Encabezados de columna
     ["Entradas", budget.entries],
     ["Transporte", budget.transport],
     ["Guía turístico", budget.guide],
     ["Servicio aeropuerto", budget.airport],
     ["Costos Adicionales", budget.extraCosts],
     ["Costos Restantes", budget.remainingBudget],
-    ["Total estimado", budget.total],
+    ["Total estimado CNY", budget.totalCNY],
+    ["Total estimado USD", budget.totalUSD],
+    ["Total estimado EUR", budget.totalEUR],
   ];
 
   // Creamos la hoja con los datos
@@ -112,7 +114,7 @@ export const exportToWord = (budget) => {
       <thead>
         <tr>
           <th>Concepto</th>
-          <th>Monto (CNY)</th>
+          <th>Monto</th>
         </tr>
       </thead>
       <tbody>
@@ -126,8 +128,16 @@ export const exportToWord = (budget) => {
       </tbody>
       <tfoot>
         <tr>
-          <td>Total estimado</td>
-          <td>&#165;${budget.total}</td>
+          <td>Total estimado CNY</td>
+          <td>&#165;${budget.totalCNY}</td>
+        </tr>
+        <tr>
+          <td>Total estimado USD</td>
+          <td>&#36;${budget.totalUSD}</td>
+        </tr>
+        <tr>
+          <td>Total estimado EUR</td>
+          <td>&#8364;${budget.totalEUR}</td>
         </tr>
       </tfoot>
     </table>

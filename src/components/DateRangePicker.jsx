@@ -1,149 +1,168 @@
-import React, { useState } from "react"; // Importa React y useState para manejo de estado local
-import { TextField } from "@mui/material"; // Importa componente TextField de Material UI
-import { CalendarToday as CalendarTodayIcon } from "@mui/icons-material"; // Icono de calendario para las etiquetas
+import React, { useState } from "react";
+import { TextField } from "@mui/material";
+import { CalendarToday as CalendarTodayIcon } from "@mui/icons-material";
 
 const DateRangePicker = ({ onDateChange }) => {
-  // Estado para almacenar la fecha de inicio (mes y año, formato "YYYY-MM")
+  // Estado para almacenar el mes seleccionado en formato "YYYY-MM"
+  const [selectedMonth, setSelectedMonth] = useState("");
+
+  /* 
+  // Código comentado para usar selección de rango de fechas (fecha inicio y fin)
   const [startDate, setStartDate] = useState("");
-  // Estado para almacenar la fecha de fin (mes y año)
   const [endDate, setEndDate] = useState("");
 
-  // Función para validar que la fecha de fin no sea anterior a la fecha de inicio
-  const isValidRange = (start, end) => {
-    if (!start || !end) return true; // Si alguno no está definido, no hay problema
-    // Como formato es "YYYY-MM", se puede comparar como strings lexicográficamente
-    return start <= end;
-  };
-
-  // Manejador para cuando el usuario cambia la fecha de inicio
+  // Handler para cambio en fecha inicio
   const handleStartDateChange = (e) => {
-    const date = e.target.value; // Obtiene el valor seleccionado del input
-    setStartDate(date); // Actualiza el estado startDate con el nuevo valor
-
-    // Si existe fecha fin y la fecha fin es menor que la fecha inicio, se limpia la fecha fin
-    if (endDate && !isValidRange(date, endDate)) {
-      setEndDate(""); // Limpia el estado endDate porque no es válido con el nuevo inicio
-      onDateChange({ start: date, end: "" }); // Llama al callback con fecha fin vacía
-      return; // Termina la función aquí para evitar llamar dos veces onDateChange
-    }
-
-    // Si la fecha fin existe y es válida, llama al callback con ambas fechas
-    if (endDate) {
-      onDateChange({ start: date, end: endDate });
-    } else {
-      // Si fecha fin no existe, envía solo fecha inicio y cadena vacía para fin
-      onDateChange({ start: date, end: "" });
-    }
+    const date = e.target.value;
+    setStartDate(date);
+    onDateChange({ startDate: date, endDate }); // Enviar objeto con rango
   };
 
-  // Manejador para cuando el usuario cambia la fecha de fin
+  // Handler para cambio en fecha fin
   const handleEndDateChange = (e) => {
-    const date = e.target.value; // Obtiene el valor del input
+    const date = e.target.value;
+    setEndDate(date);
+    onDateChange({ startDate, endDate: date }); // Enviar objeto con rango
+  };
+  */
 
-    // Solo acepta si la fecha fin no es anterior a la fecha inicio (si esta existe)
-    if (startDate && !isValidRange(startDate, date)) {
-      return; // Si no es válido, no hace nada (podrías mostrar error aquí si quieres)
-    }
-
-    setEndDate(date); // Actualiza el estado con la fecha fin seleccionada
-
-    // Si hay fecha inicio, envía ambas fechas al callback
-    if (startDate) {
-      onDateChange({ start: startDate, end: date });
-    } else {
-      // Si no hay fecha inicio, envía fecha fin y cadena vacía para inicio
-      onDateChange({ start: "", end: date });
-    }
+  // Función que se ejecuta cuando el usuario cambia el mes
+  const handleMonthChange = (e) => {
+    const month = e.target.value; // Captura el valor seleccionado
+    setSelectedMonth(month); // Actualiza el estado local
+    onDateChange(month); // Envía el mes seleccionado al componente padre
   };
 
   return (
-    // Contenedor con grid responsivo: 1 columna en móvil, 2 columnas en desktop
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 bg-gradient-to-br from-purple-100 via-white to-purple-200 border border-gray-200 p-6 rounded-2xl shadow-md">
-      {/* Selector del mes de inicio */}
-      <div>
-        {/* Etiqueta con ícono y texto */}
+    <div className="w-full max-w-sm p-6 rounded-3xl bg-gradient-to-br from-purple-200 via-purple-100 to-white border border-purple-300 shadow-lg hover:shadow-xl transition-shadow duration-300">
+      <label
+        htmlFor="month-picker" // Conecta el label con el input para accesibilidad
+        className="flex items-center gap-3 text-lg font-bold text-purple-900 mb-4 select-none"
+      >
+        <CalendarTodayIcon className="text-purple-600 text-2xl" />
+        Mes seleccionado
+      </label>
+
+      {/* Selección solo de un mes (actual) */}
+      <TextField
+        id="month-picker"
+        type="month"
+        value={selectedMonth}
+        onChange={handleMonthChange}
+        inputProps={{ min: "2025-01" }}
+        aria-label="Seleccionar mes y año"
+        sx={{
+          width: "100%",
+          "& .MuiInputBase-root": {
+            borderRadius: "16px",
+            backgroundColor: "#faf5ff",
+            boxShadow: "inset 0 2px 5px rgb(160 118 204 / 0.2)",
+            transition: "background-color 0.3s, box-shadow 0.3s",
+            "&:hover": {
+              backgroundColor: "#f3e8ff",
+              boxShadow: "inset 0 3px 7px rgb(160 118 204 / 0.35)",
+            },
+          },
+          "& input": {
+            padding: "14px 18px",
+            fontSize: "1.1rem",
+            fontWeight: 600,
+            color: "#5b21b6",
+            letterSpacing: "0.02em",
+          },
+          "& .Mui-focused .MuiOutlinedInput-notchedOutline": {
+            borderColor: "#7c3aed",
+            boxShadow: "0 0 8px 3px rgba(124, 58, 237, 0.4)",
+          },
+        }}
+      />
+
+      {/*
+      // Código comentado para selección de rango de fechas (inicio y fin)
+      <div className="mt-6 space-y-4">
         <label
-          htmlFor="start-date" // Relaciona la etiqueta con el input mediante el id
-          className="flex items-center gap-2 text-sm font-semibold text-gray-800 mb-2"
+          htmlFor="start-date-picker"
+          className="flex items-center gap-3 text-lg font-bold text-purple-900 select-none"
         >
-          <CalendarTodayIcon className="text-blue-600" />{" "}
-          {/* Icono de calendario */}
-          Mes de inicio
+          <CalendarTodayIcon className="text-purple-600 text-2xl" />
+          Fecha inicio
         </label>
-
-        {/* Componente TextField para seleccionar mes y año (tipo "month") */}
         <TextField
-          id="start-date" // Id para relacionar con label y para accesibilidad
-          type="month" // Input que permite seleccionar solo mes y año
-          value={startDate} // Valor controlado por estado startDate
-          onChange={handleStartDateChange} // Función para manejar cambios de fecha inicio
-          inputProps={{ min: "2025-01" }} // Fecha mínima permitida (enero 2025)
-          sx={{
-            width: "100%", // Ancho completo del contenedor
-            "& .MuiInputBase-root": {
-              borderRadius: "12px", // Bordes redondeados del input
-              backgroundColor: "#f9fafb", // Fondo claro
-              transition: "all 0.3s", // Transición suave para hover y focus
-              "&:hover": {
-                backgroundColor: "#f3f4f6", // Color más claro al pasar el mouse
-              },
-            },
-            "& input": {
-              padding: "12px 16px", // Espaciado interno del texto
-              fontSize: "1rem", // Tamaño de letra
-              fontWeight: 500, // Peso de letra semibold
-            },
-            "& .Mui-focused .MuiOutlinedInput-notchedOutline": {
-              borderColor: "#2563eb", // Color azul en foco
-              boxShadow: "0 0 0 3px rgba(37, 99, 235, 0.2)", // Sombra azul suave en foco
-            },
-          }}
-        />
-      </div>
-
-      {/* Selector del mes de fin */}
-      <div>
-        {/* Etiqueta con icono y texto */}
-        <label
-          htmlFor="end-date"
-          className="flex items-center gap-2 text-sm font-semibold text-gray-800 mb-2"
-        >
-          <CalendarTodayIcon className="text-blue-600" />{" "}
-          {/* Icono calendario */}
-          Mes de fin
-        </label>
-
-        {/* Componente TextField para seleccionar mes y año final */}
-        <TextField
-          id="end-date"
-          type="month" // Selección mes/año
-          value={endDate} // Valor controlado por estado endDate
-          onChange={handleEndDateChange} // Función para manejar cambio de fecha fin
-          inputProps={{ min: startDate || "2025-01" }} // Fecha mínima es inicio o enero 2025
+          id="start-date-picker"
+          type="date"
+          value={startDate}
+          onChange={handleStartDateChange}
+          inputProps={{ min: "2025-01-01" }}
+          aria-label="Seleccionar fecha inicio"
           sx={{
             width: "100%",
             "& .MuiInputBase-root": {
-              borderRadius: "12px",
-              backgroundColor: "#f9fafb",
-              transition: "all 0.3s",
+              borderRadius: "16px",
+              backgroundColor: "#faf5ff",
+              boxShadow: "inset 0 2px 5px rgb(160 118 204 / 0.2)",
+              transition: "background-color 0.3s, box-shadow 0.3s",
               "&:hover": {
-                backgroundColor: "#f3f4f6",
+                backgroundColor: "#f3e8ff",
+                boxShadow: "inset 0 3px 7px rgb(160 118 204 / 0.35)",
               },
             },
             "& input": {
-              padding: "12px 16px",
-              fontSize: "1rem",
-              fontWeight: 500,
+              padding: "14px 18px",
+              fontSize: "1.1rem",
+              fontWeight: 600,
+              color: "#5b21b6",
+              letterSpacing: "0.02em",
             },
             "& .Mui-focused .MuiOutlinedInput-notchedOutline": {
-              borderColor: "#2563eb",
-              boxShadow: "0 0 0 3px rgba(37, 99, 235, 0.2)",
+              borderColor: "#7c3aed",
+              boxShadow: "0 0 8px 3px rgba(124, 58, 237, 0.4)",
+            },
+          }}
+        />
+
+        <label
+          htmlFor="end-date-picker"
+          className="flex items-center gap-3 text-lg font-bold text-purple-900 select-none"
+        >
+          <CalendarTodayIcon className="text-purple-600 text-2xl" />
+          Fecha fin
+        </label>
+        <TextField
+          id="end-date-picker"
+          type="date"
+          value={endDate}
+          onChange={handleEndDateChange}
+          inputProps={{ min: startDate || "2025-01-01" }} // No permitir fechas antes de inicio
+          aria-label="Seleccionar fecha fin"
+          sx={{
+            width: "100%",
+            "& .MuiInputBase-root": {
+              borderRadius: "16px",
+              backgroundColor: "#faf5ff",
+              boxShadow: "inset 0 2px 5px rgb(160 118 204 / 0.2)",
+              transition: "background-color 0.3s, box-shadow 0.3s",
+              "&:hover": {
+                backgroundColor: "#f3e8ff",
+                boxShadow: "inset 0 3px 7px rgb(160 118 204 / 0.35)",
+              },
+            },
+            "& input": {
+              padding: "14px 18px",
+              fontSize: "1.1rem",
+              fontWeight: 600,
+              color: "#5b21b6",
+              letterSpacing: "0.02em",
+            },
+            "& .Mui-focused .MuiOutlinedInput-notchedOutline": {
+              borderColor: "#7c3aed",
+              boxShadow: "0 0 8px 3px rgba(124, 58, 237, 0.4)",
             },
           }}
         />
       </div>
+      */}
     </div>
   );
 };
 
-export default DateRangePicker; // Exporta el componente para usar en otras partes de la app
+export default DateRangePicker;

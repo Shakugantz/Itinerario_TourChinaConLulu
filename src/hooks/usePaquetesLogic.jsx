@@ -9,11 +9,11 @@ import { useState } from "react";
  * - paqueteIds: IDs de destinos por paquete
  * - togglePaquete: activa o desactiva un paquete
  * - toggleDestination: activa o desactiva un destino individual si no está en paquete activo
+ * - resetPaquetes: desactiva todos los paquetes y limpia destinos
  *
  * @param {Function} setSelectedDestinationsExternal Función para actualizar destinos desde afuera (opcional)
  */
 export default function usePaquetesLogic(setSelectedDestinationsExternal) {
-  // Estado paquetes activos
   const [paquetes, setPaquetes] = useState({
     paquete1: false,
     paquete2: false,
@@ -22,7 +22,6 @@ export default function usePaquetesLogic(setSelectedDestinationsExternal) {
     paquete5: false,
   });
 
-  // Mapeo estático de destinos que incluye cada paquete
   const paqueteIds = {
     paquete1: [1, 2, 3],
     paquete2: [6],
@@ -33,9 +32,6 @@ export default function usePaquetesLogic(setSelectedDestinationsExternal) {
 
   const [selectedDestinations, setSelectedDestinations] = useState([]);
 
-  /**
-   * Alterna la selección de un paquete, agregando o removiendo sus destinos
-   */
   const togglePaquete = (paquete) => {
     setPaquetes((prev) => {
       const newPaquetes = { ...prev, [paquete]: !prev[paquete] };
@@ -43,21 +39,17 @@ export default function usePaquetesLogic(setSelectedDestinationsExternal) {
       const destinosDelPaquete = paqueteIds[paquete] || [];
 
       if (newPaquetes[paquete]) {
-        // Paquete activado: agregamos todos sus destinos si no están
         destinosDelPaquete.forEach((id) => {
           if (!newSelected.includes(id)) newSelected.push(id);
         });
       } else {
-        // Paquete desactivado: solo eliminamos los destinos que no estén en otro paquete activo
         newSelected = newSelected.filter((id) => {
-          // Verificamos si el destino está en otro paquete activo diferente al desactivado
           const perteneceOtroPaqueteActivo = Object.entries(paqueteIds).some(
             ([otroPaquete, ids]) =>
               otroPaquete !== paquete &&
-              newPaquetes[otroPaquete] && // paquete activo
+              newPaquetes[otroPaquete] &&
               ids.includes(id)
           );
-          // Si el destino está en el paquete que desactivamos y no está en otro paquete activo, lo removemos
           if (destinosDelPaquete.includes(id) && !perteneceOtroPaqueteActivo) {
             return false;
           }
@@ -75,12 +67,7 @@ export default function usePaquetesLogic(setSelectedDestinationsExternal) {
     });
   };
 
-  /**
-   * Alterna la selección de un destino individual, solo si no pertenece a un paquete activo
-   * @param {number} destinationId
-   */
   const toggleDestination = (destinationId) => {
-    // Si el destino pertenece a un paquete activo, no hacer nada
     const paquetesActivos = Object.entries(paqueteIds).filter(
       ([paquete, ids]) => paquetes[paquete] && ids.includes(destinationId)
     );
@@ -97,11 +84,28 @@ export default function usePaquetesLogic(setSelectedDestinationsExternal) {
     }
   };
 
+  // NUEVA FUNCIÓN: desactivar todos paquetes y limpiar destinos
+  const resetPaquetes = () => {
+    setPaquetes({
+      paquete1: false,
+      paquete2: false,
+      paquete3: false,
+      paquete4: false,
+      paquete5: false,
+    });
+    if (setSelectedDestinationsExternal) {
+      setSelectedDestinationsExternal([]);
+    } else {
+      setSelectedDestinations([]);
+    }
+  };
+
   return {
     paquetes,
     togglePaquete,
     paqueteIds,
     selectedDestinations,
     toggleDestination,
+    resetPaquetes, // <-- exportamos aquí
   };
 }

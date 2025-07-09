@@ -4,6 +4,8 @@ export const destinations = [
     name: "Plaza Tiananmen",
     lowSeasonPrice: 0,
     highSeasonPrice: 0,
+    lowSeasonPriceManual: 0,
+    highSeasonPriceManual: 0,
     image: `${process.env.PUBLIC_URL}/images/Plaza_Tiananmen.png`,
   },
   {
@@ -11,6 +13,8 @@ export const destinations = [
     name: "Templo del Cielo",
     lowSeasonPrice: 28,
     highSeasonPrice: 34,
+    lowSeasonPriceManual: 28,
+    highSeasonPriceManual: 34,
     image: `${process.env.PUBLIC_URL}/images/Templo_Cielo.png`,
   },
   {
@@ -18,6 +22,8 @@ export const destinations = [
     name: "Ciudad Prohibida",
     lowSeasonPrice: 40,
     highSeasonPrice: 70,
+    lowSeasonPriceManual: 40,
+    highSeasonPriceManual: 70,
     image: `${process.env.PUBLIC_URL}/images/Ciudad_Prohibida.png`,
   },
   {
@@ -25,6 +31,8 @@ export const destinations = [
     name: "Palacio de Verano",
     lowSeasonPrice: 20,
     highSeasonPrice: 30,
+    lowSeasonPriceManual: 20,
+    highSeasonPriceManual: 30,
     image: `${process.env.PUBLIC_URL}/images/Palacio_Verano.png`,
   },
   {
@@ -32,6 +40,8 @@ export const destinations = [
     name: "Centro Olímpico",
     lowSeasonPrice: 0,
     highSeasonPrice: 0,
+    lowSeasonPriceManual: 0,
+    highSeasonPriceManual: 0,
     image: `${process.env.PUBLIC_URL}/images/Centro_Olimpico.png`,
   },
   {
@@ -39,6 +49,8 @@ export const destinations = [
     name: "Muralla Mutianyu",
     lowSeasonPrice: 200,
     highSeasonPrice: 200,
+    lowSeasonPriceManual: 140,
+    highSeasonPriceManual: 140,
     image: `${process.env.PUBLIC_URL}/images/Muralla_Mutianyu.png`,
   },
   {
@@ -46,6 +58,8 @@ export const destinations = [
     name: "Templo de Lama",
     lowSeasonPrice: 25,
     highSeasonPrice: 25,
+    lowSeasonPriceManual: 25,
+    highSeasonPriceManual: 25,
     image: `${process.env.PUBLIC_URL}/images/Templo_Lama.png`,
   },
   {
@@ -53,6 +67,8 @@ export const destinations = [
     name: "Templo de Confucio",
     lowSeasonPrice: 40,
     highSeasonPrice: 40,
+    lowSeasonPriceManual: 40,
+    highSeasonPriceManual: 40,
     image: `${process.env.PUBLIC_URL}/images/Templo_Confucio.png`,
   },
   {
@@ -60,6 +76,8 @@ export const destinations = [
     name: "Palacio del Príncipe Gong",
     lowSeasonPrice: 40,
     highSeasonPrice: 40,
+    lowSeasonPriceManual: 40,
+    highSeasonPriceManual: 40,
     image: `${process.env.PUBLIC_URL}/images/Principe_Kung.png`,
   },
   {
@@ -67,6 +85,8 @@ export const destinations = [
     name: "Muralla Badaling",
     lowSeasonPrice: 180,
     highSeasonPrice: 180,
+    lowSeasonPriceManual: 180,
+    highSeasonPriceManual: 180,
     image: `${process.env.PUBLIC_URL}/images/Muralla_Badaling.png`,
   },
   {
@@ -74,6 +94,8 @@ export const destinations = [
     name: "Parque Jingshan",
     lowSeasonPrice: 2,
     highSeasonPrice: 2,
+    lowSeasonPriceManual: 2,
+    highSeasonPriceManual: 2,
     image: `${process.env.PUBLIC_URL}/images/Parque_Jingshan.png`,
   },
 ];

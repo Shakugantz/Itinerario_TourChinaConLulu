@@ -9,7 +9,10 @@ import { InsightsOutlined } from "@mui/icons-material"; // Ícono moderno de est
  */
 const SummaryCard = ({ title, value }) => {
   return (
-    <div className="relative p-6 rounded-2xl overflow-hidden shadow-xl bg-gradient-to-br from-purple-100 via-white to-purple-200 shadow-lg p-6 rounded-2xl border border-purple-300 group">
+    <div
+      className="relative p-6 rounded-2xl overflow-hidden shadow-xl bg-gradient-to-br from-purple-100 via-white to-purple-200 shadow-lg p-6 rounded-2xl border border-purple-300 group"
+      data-aos="fade-up"
+    >
       {/* Brillo animado de fondo */}
       <div className="absolute -top-10 -right-10 w-32 h-32 bg-blue-200 opacity-20 rounded-full blur-3xl group-hover:scale-110 transition-transform duration-500"></div>
 

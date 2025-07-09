@@ -28,7 +28,7 @@ const TransportList = ({
   setIsManualTransportActive,
 }) => {
   const [showAll, setShowAll] = useState(false);
-  const VISIBLE_COUNT = 3;
+  const VISIBLE_COUNT = 2;
 
   /**
    * Actualiza precios manuales para un transporte dado

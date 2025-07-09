@@ -1,5 +1,10 @@
-import React, { useState } from "react";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import React, { useState, useEffect } from "react";
+import {
+  signInWithEmailAndPassword,
+  setPersistence,
+  browserLocalPersistence,
+  browserSessionPersistence,
+} from "firebase/auth";
 import { auth } from "../firebaseConfig";
 import {
   Email,
@@ -11,14 +16,22 @@ import {
 import confetti from "canvas-confetti";
 
 const Login = ({ onLoginSuccess }) => {
-  // Estados del formulario
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false); // Visibilidad de contraseña
+  const [showPassword, setShowPassword] = useState(false);
+  const [rememberMe, setRememberMe] = useState(true);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // Lanza confetti al escribir en los inputs
+  // Cargar email guardado si existe
+  useEffect(() => {
+    const savedEmail = localStorage.getItem("rememberedEmail");
+    if (savedEmail) {
+      setEmail(savedEmail);
+      setRememberMe(true);
+    }
+  }, []);
+
   const handleConfetti = () => {
     confetti({
       particleCount: 20 + Math.floor(Math.random() * 30),
@@ -33,22 +46,34 @@ const Login = ({ onLoginSuccess }) => {
     });
   };
 
-  // Inicia sesión con Firebase Auth
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError("");
+
     try {
+      const persistence = rememberMe
+        ? browserLocalPersistence
+        : browserSessionPersistence;
+
+      await setPersistence(auth, persistence);
       await signInWithEmailAndPassword(auth, email, password);
-      if (onLoginSuccess) onLoginSuccess(); // Notificar al padre que se logueó correctamente
-      setLoading(false); // se desactiva loading si inicia sesión OK
+
+      // Guardar o eliminar el email del localStorage
+      if (rememberMe) {
+        localStorage.setItem("rememberedEmail", email);
+      } else {
+        localStorage.removeItem("rememberedEmail");
+      }
+
+      if (onLoginSuccess) onLoginSuccess();
+      setLoading(false);
     } catch (err) {
       setError("Correo o contraseña incorrectos");
       setLoading(false);
     }
   };
 
-  // Alterna la visibilidad de la contraseña
   const togglePasswordVisibility = () => {
     setShowPassword((prev) => !prev);
   };
@@ -59,7 +84,6 @@ const Login = ({ onLoginSuccess }) => {
         className="bg-white p-10 rounded-3xl shadow-2xl w-full max-w-md animate-fade-in"
         data-aos="zoom-in"
       >
-        {/* Título */}
         <h2
           className="text-3xl font-extrabold text-center text-gray-800 mb-6"
           data-aos="fade-down"
@@ -67,20 +91,25 @@ const Login = ({ onLoginSuccess }) => {
           Bienvenido de nuevo
         </h2>
 
-        {/* Formulario */}
-        <form onSubmit={handleLogin} className="space-y-6" data-aos="fade-up">
-          {/* Input de correo */}
+        <form
+          onSubmit={handleLogin}
+          autoComplete="on"
+          className="space-y-6"
+          data-aos="fade-up"
+        >
+          {/* Email */}
           <div>
             <label className="block mb-2 text-sm font-medium text-gray-700">
               Correo electrónico
             </label>
             <div className="relative">
-              {/* Icono de email */}
               <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
                 <Email />
               </span>
               <input
                 type="email"
+                name="email"
+                autoComplete="email"
                 className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 text-gray-800 font-semibold animate-glow"
                 value={email}
                 onChange={(e) => {
@@ -92,20 +121,19 @@ const Login = ({ onLoginSuccess }) => {
             </div>
           </div>
 
-          {/* Input de contraseña */}
+          {/* Contraseña */}
           <div>
             <label className="block mb-2 text-sm font-medium text-gray-700">
               Contraseña
             </label>
             <div className="relative">
-              {/* Icono de candado */}
               <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
                 <Lock />
               </span>
-
-              {/* Campo de contraseña con visibilidad dinámica */}
               <input
                 type={showPassword ? "text" : "password"}
+                name="password"
+                autoComplete="current-password"
                 className="w-full pl-10 pr-10 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 text-gray-800 font-semibold animate-glow"
                 value={password}
                 onChange={(e) => {
@@ -114,8 +142,6 @@ const Login = ({ onLoginSuccess }) => {
                 }}
                 required
               />
-
-              {/* Botón de mostrar/ocultar contraseña */}
               <button
                 type="button"
                 onClick={togglePasswordVisibility}
@@ -127,7 +153,18 @@ const Login = ({ onLoginSuccess }) => {
             </div>
           </div>
 
-          {/* Mensaje de error */}
+          {/* Recordarme */}
+          <label className="flex items-center space-x-2 text-sm text-gray-600 mt-1">
+            <input
+              type="checkbox"
+              className="form-checkbox text-purple-600"
+              checked={rememberMe}
+              onChange={() => setRememberMe(!rememberMe)}
+            />
+            <span>Recordarme en este dispositivo</span>
+          </label>
+
+          {/* Error */}
           {error && (
             <p
               className="text-red-500 text-sm text-center animate-pulse"
@@ -137,7 +174,7 @@ const Login = ({ onLoginSuccess }) => {
             </p>
           )}
 
-          {/* Botón de login */}
+          {/* Botón */}
           <button
             type="submit"
             disabled={loading}
@@ -151,7 +188,6 @@ const Login = ({ onLoginSuccess }) => {
           </button>
         </form>
 
-        {/* Footer */}
         <p
           className="mt-6 text-sm text-center text-gray-500"
           data-aos="fade-up"

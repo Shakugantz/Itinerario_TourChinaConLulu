@@ -2,12 +2,8 @@ import React, { useState, useMemo } from "react";
 import DestinationCard from "./DestinationCard";
 import { AnimatePresence, motion } from "framer-motion";
 
-/**
- * Lista de destinos turísticos con opción de mostrar más o menos.
- * Permite cambiar entre precios normales y precios manuales por temporada.
- */
 const DestinationList = ({
-  destinations,
+  destinations = [],
   selectedDestinations,
   toggleDestination,
   paquetes,
@@ -17,13 +13,16 @@ const DestinationList = ({
   paquete4Ids,
   paquete5Ids,
   isHighSeason,
-  useManualPrices = false, // ← NUEVO prop
+  useManualPrices = false,
 }) => {
   const [showAll, setShowAll] = useState(false);
   const VISIBLE_COUNT = 7;
 
   const displayedDestinations = useMemo(() => {
-    return showAll ? destinations : destinations.slice(0, VISIBLE_COUNT);
+    const safeDestinations = Array.isArray(destinations) ? destinations : [];
+    return showAll
+      ? safeDestinations
+      : safeDestinations.slice(0, VISIBLE_COUNT);
   }, [showAll, destinations]);
 
   const paqueteColorMap = useMemo(

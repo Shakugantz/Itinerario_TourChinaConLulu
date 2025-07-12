@@ -23,7 +23,7 @@ const GuideSelector = ({
 
   // Precio diario automático según rango de personas
   const dailyRate = useMemo(() => {
-    const rate = guidePrices.find(
+    const rate = (guidePrices || []).find(
       (g) => peopleCount >= g.minPeople && peopleCount <= g.maxPeople
     );
     return rate ? rate.dailyRate : 0;

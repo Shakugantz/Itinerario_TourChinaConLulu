@@ -68,19 +68,7 @@ const Tab1Presupuesto = ({
       </div>
 
       {/* PAR 2: Paquetes + Guía */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Section title="Guía turístico">
-          <GuideSelector
-            peopleCount={peopleCount}
-            selectedDays={guideDays}
-            onDaysChange={setGuideDays}
-            guidePrices={guidePrices}
-            setManualGuide={setManualGuide}
-            isManualGuideActive={isManualGuideActive}
-            setIsManualGuideActive={setIsManualGuideActive}
-          />
-        </Section>
-
+      <div className="space-y-4">
         <Section title="Paquetes">
           <PackageSelector paquetes={paquetes} togglePaquete={togglePaquete} />
         </Section>
@@ -117,7 +105,18 @@ const Tab1Presupuesto = ({
       </div>
 
       {/* Costos manuales */}
-      <div className="max-w-2xl mx-auto">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <Section title="Guía turístico">
+          <GuideSelector
+            peopleCount={peopleCount}
+            selectedDays={guideDays}
+            onDaysChange={setGuideDays}
+            guidePrices={guidePrices}
+            setManualGuide={setManualGuide}
+            isManualGuideActive={isManualGuideActive}
+            setIsManualGuideActive={setIsManualGuideActive}
+          />
+        </Section>
         <Section title="Costos Manuales">
           <ExtraCostsCard
             extraCosts={extraCosts}

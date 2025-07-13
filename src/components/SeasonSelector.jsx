@@ -6,7 +6,7 @@ const SeasonSelector = ({ season, onSeasonChange }) => {
       <h3 className="text-xl font-semibold text-purple-900 mb-6 select-none text-center tracking-wide">
         Selecciona la temporada
       </h3>
-      <div className="flex gap-8 px-4">
+      <div className="flex flex-col sm:flex-row gap-4 sm:gap-8 px-2 sm:px-4">
         {/* Temporada Alta */}
         <label
           htmlFor="season-high"

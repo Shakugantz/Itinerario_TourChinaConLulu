@@ -9,6 +9,7 @@ import DestinationList from "./DestinationList";
 import TransportList from "./TransportList";
 import ExtraCostsCard from "./ExtraCostsCard";
 import SummaryCard from "./SummaryCard";
+import { guidePrices } from "../mock/guides";
 
 const Tab1Presupuesto = ({
   destinations, // <--- NUEVA PROP AQUÍ
@@ -73,6 +74,7 @@ const Tab1Presupuesto = ({
             peopleCount={peopleCount}
             selectedDays={guideDays}
             onDaysChange={setGuideDays}
+            guidePrices={guidePrices}
             setManualGuide={setManualGuide}
             isManualGuideActive={isManualGuideActive}
             setIsManualGuideActive={setIsManualGuideActive}

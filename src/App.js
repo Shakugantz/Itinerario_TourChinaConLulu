@@ -27,18 +27,11 @@ const App = () => {
   const { user, logout } = useAuth();
   const [loginManuallyConfirmed, setLoginManuallyConfirmed] = useState(false);
 
+  // Estados para Tab 1
   const [extraCosts, setExtraCosts] = useState("0");
   const [remainingBudget, setRemainingBudget] = useState("0");
-
-  const [manualPeopleCount, setManualPeopleCount] = useState(1);
-  const [manualExtraCosts, setManualExtraCosts] = useState("0");
-  const [manualRemainingBudget, setManualRemainingBudget] = useState("0");
-  const [manualSelectedDestinations, setManualSelectedDestinations] = useState(
-    []
-  );
-  const [manualTransportCost, setManualTransportCost] = useState("0");
-  const [manualGuideCost, setManualGuideCost] = useState("0");
-
+  const [season, setSeason] = useState(""); // "" significa que no se ha seleccionado nada aún
+  const { peopleCount, setPeopleCount } = usePeopleCount();
   const {
     paquetes,
     togglePaquete,
@@ -47,30 +40,35 @@ const App = () => {
     toggleDestination,
     resetPaquetes,
   } = usePaquetesLogic();
-
   const {
     transportDays,
     updateTransportDays,
     airportServicePricesByTransport,
     handleAirportServiceChange,
   } = useTransport();
-
   const { guideDays, setGuideDays } = useGuide();
-  const { isPopupOpen, openPopup, closePopup } = useUI();
-
-  const [season, setSeason] = useState("");
-  const [seasonManual, setSeasonManual] = useState("");
-
-  const isHighSeason = season === "high";
-  const isHighSeasonManual = seasonManual === "high";
-
-  const { peopleCount, setPeopleCount } = usePeopleCount();
-
   const [manualGuide, setManualGuide] = useState(null);
   const [isManualGuideActive, setIsManualGuideActive] = useState(false);
-
   const [manualTransportPrices, setManualTransportPrices] = useState({});
   const [isManualTransportActive, setIsManualTransportActive] = useState(false);
+
+  // Estados para Tab 2
+  const [manualPeopleCount, setManualPeopleCount] = useState(1);
+  const [manualExtraCosts, setManualExtraCosts] = useState("0");
+  const [manualRemainingBudget, setManualRemainingBudget] = useState("0");
+  const [manualSelectedDestinations, setManualSelectedDestinations] = useState(
+    []
+  );
+  const [manualTransportCost, setManualTransportCost] = useState("0");
+  const [manualGuideCost, setManualGuideCost] = useState("0");
+  const [seasonManual, setSeasonManual] = useState(""); // "" significa que no se ha seleccionado nada aún
+  const [importedCotizacionCNY, setImportedCotizacionCNY] = useState(0); // Para que el Tab 2 sepa la cotización importada
+
+  const { isPopupOpen, openPopup, closePopup } = useUI();
+
+  // Determinar si es temporada alta. Si no se ha seleccionado, se considera alta por defecto.
+  const isHighSeason = season === "high" || season === "";
+  const isHighSeasonManual = seasonManual === "high" || seasonManual === "";
 
   useEffect(() => {
     AOS.init({ duration: 1000 });
@@ -78,7 +76,7 @@ const App = () => {
 
   const budget = useBudget({
     selectedDestinations,
-    isHighSeason,
+    isHighSeason, // Pasamos directamente el estado procesado
     peopleCount,
     transportDays,
     guideDays,
@@ -97,12 +95,29 @@ const App = () => {
     guiaManual: manualGuideCost,
     extraCosts: manualExtraCosts,
     remainingBudget: manualRemainingBudget,
-    cotizacionCliente: budget.totalCNY,
-    isHighSeason: isHighSeasonManual,
+    cotizacionCliente: importedCotizacionCNY, // Usamos la cotización importada
+    isHighSeason: isHighSeasonManual, // Pasamos directamente el estado procesado
     peopleCountManual: manualPeopleCount,
   });
 
   const [currentTab, setCurrentTab] = useState(1);
+
+  // Función para importar data desde Tab 1 a Tab 2
+  const importarData = () => {
+    setManualPeopleCount(peopleCount);
+    setManualExtraCosts(extraCosts);
+    setManualRemainingBudget(remainingBudget);
+    setManualSelectedDestinations([...selectedDestinations]);
+    // Asegurarse de que los valores de costo sean números si se van a usar en cálculos
+    setManualTransportCost(
+      budget.transport.toLocaleString("en-US", { useGrouping: false })
+    );
+    setManualGuideCost(
+      budget.guide.toLocaleString("en-US", { useGrouping: false })
+    );
+    setSeasonManual(season); // Copia la temporada actual de Tab 1 a Tab 2
+    setImportedCotizacionCNY(budget.totalCNY); // Actualiza la cotización para Tab 2
+  };
 
   const resetTab1 = () => {
     setSeason("");
@@ -127,6 +142,7 @@ const App = () => {
     setManualTransportCost("0");
     setManualGuideCost("0");
     setSeasonManual("");
+    setImportedCotizacionCNY(0); // Reiniciar también la cotización importada
   };
 
   return (
@@ -157,7 +173,7 @@ const App = () => {
             paqueteIds={paqueteIds}
             selectedDestinations={selectedDestinations}
             toggleDestination={toggleDestination}
-            isHighSeason={isHighSeason}
+            isHighSeason={isHighSeason} // Pasa el valor procesado
             guideDays={guideDays}
             setGuideDays={setGuideDays}
             transportDays={transportDays}
@@ -201,15 +217,17 @@ const App = () => {
             setManualGuideCost={setManualGuideCost}
             paquetes={paquetes}
             paqueteIds={paqueteIds}
-            isHighSeasonManual={isHighSeasonManual}
+            isHighSeasonManual={isHighSeasonManual} // Pasa el valor procesado
             manualBudget={manualBudget}
             resetTab2={resetTab2}
-            peopleCount={peopleCount}
-            extraCosts={extraCosts}
-            remainingBudget={remainingBudget}
-            selectedDestinations={selectedDestinations}
-            season={season}
-            setSeason={setSeason}
+            importarData={importarData} // Pasa la función importarData como prop
+            // ELIMINADAS LAS PROPS DEL TAB 1 QUE YA NO SON NECESARIAS AQUÍ:
+            // peopleCount={peopleCount}
+            // extraCosts={extraCosts}
+            // remainingBudget={remainingBudget}
+            // selectedDestinations={selectedDestinations}
+            // season={season}
+            // setSeason={setSeason}
           />
         )}
       </div>

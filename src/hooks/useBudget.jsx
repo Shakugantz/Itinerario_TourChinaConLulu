@@ -14,11 +14,11 @@ import { guidePrices } from "../mock/guides";
  *
  * @param {Object} params
  * @param {string[]} params.selectedDestinations - IDs de destinos seleccionados.
- * @param {boolean} params.isHighSeason - Indica si es temporada alta.
+ * @param {boolean|null|undefined} params.isHighSeason - Indica si es temporada alta. Si es null/undefined, se asume true.
  * @param {number} params.peopleCount - Número de personas.
  * @param {Object} params.transportDays - { transportId: días asignados }.
  * @param {Object} params.manualTransportPrices - { transportId: { isManual, price } }.
- * @param {number} params.guideDays - Días que se usará guía.
+ * @param {number} params.param.guideDays - Días que se usará guía.
  * @param {Object} params.manualGuide - { days, price } con precio manual guía.
  * @param {boolean} params.isManualGuideActive - Flag si el precio manual del guía está activo.
  * @param {Object} params.airportServicePricesByTransport - { transportId: { envioPrice, recojoPrice } }.
@@ -29,7 +29,7 @@ import { guidePrices } from "../mock/guides";
  */
 function useBudget({
   selectedDestinations,
-  isHighSeason,
+  isHighSeason, // Puede ser true, false, o "" (string vacío) del estado `season` en App.js
   peopleCount,
   transportDays,
   manualTransportPrices, // Objeto { transportId: { isManual, price } }
@@ -50,13 +50,17 @@ function useBudget({
   }, [manualGuide]);
 
   return useMemo(() => {
+    // Determinar la temporada efectiva. Si isHighSeason es una cadena vacía o no definida, se asume alta.
+    const effectiveIsHighSeason = isHighSeason === true || isHighSeason === "";
+
     // 1. Cálculo del costo por destinos seleccionados (multiplicado por número de personas)
     const entries =
       selectedDestinations.reduce((sum, destId) => {
         const dest = destinations.find((d) => d.id === destId);
         if (!dest) return sum;
         return (
-          sum + (isHighSeason ? dest.highSeasonPrice : dest.lowSeasonPrice)
+          sum +
+          (effectiveIsHighSeason ? dest.highSeasonPrice : dest.lowSeasonPrice)
         );
       }, 0) * peopleCount;
 
@@ -141,7 +145,7 @@ function useBudget({
     };
   }, [
     selectedDestinations,
-    isHighSeason,
+    isHighSeason, // Dependencia modificada
     peopleCount,
     transportDays,
     manualTransportPrices,

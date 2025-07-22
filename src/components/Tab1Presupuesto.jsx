@@ -8,11 +8,11 @@ import PackageSelector from "./PackageSelector";
 import DestinationList from "./DestinationList";
 import TransportList from "./TransportList";
 import ExtraCostsCard from "./ExtraCostsCard";
-import SummaryCard from "./SummaryCard";
+import SummaryCard from "./SummaryCard"; // Usará la versión actualizada
 import { guidePrices } from "../mock/guides";
 
 const Tab1Presupuesto = ({
-  destinations, // <--- NUEVA PROP AQUÍ
+  destinations,
   season,
   setSeason,
   peopleCount,
@@ -22,7 +22,7 @@ const Tab1Presupuesto = ({
   paqueteIds,
   selectedDestinations,
   toggleDestination,
-  isHighSeason,
+  isHighSeason, // Ahora es un valor boolean procesado
   guideDays,
   setGuideDays,
   transportDays,
@@ -78,7 +78,7 @@ const Tab1Presupuesto = ({
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Section title="Lugares a visitar">
           <DestinationList
-            destinations={destinations} // <--- PASAR PROP CORRECTA AQUÍ
+            destinations={destinations}
             selectedDestinations={selectedDestinations}
             toggleDestination={toggleDestination}
             paquetes={paquetes}
@@ -87,7 +87,7 @@ const Tab1Presupuesto = ({
             paquete3Ids={paqueteIds.paquete3}
             paquete4Ids={paqueteIds.paquete4}
             paquete5Ids={paqueteIds.paquete5}
-            isHighSeason={isHighSeason}
+            isHighSeason={isHighSeason} // Se pasa el valor procesado
           />
         </Section>
 
@@ -137,8 +137,8 @@ const Tab1Presupuesto = ({
             Resumen del presupuesto
           </h2>
 
-          {/* Totales por categoría */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 border border-gray-200 p-4 rounded-lg">
+          {/* Totales por categoría - AHORA CON LAS CARDS MÁS PEQUEÑAS */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 gap-3 border border-gray-200 p-3 rounded-lg">
             <SummaryCard
               title="Entradas"
               value={budget.entries.toLocaleString()}
@@ -165,29 +165,32 @@ const Tab1Presupuesto = ({
             />
           </div>
 
-          {/* Totales por moneda */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mt-6 border border-gray-200 rounded-lg p-4 text-center">
-            <div>
-              <h3 className="font-medium text-gray-900 text-sm">
+          {/* Totales por moneda - INCREMENTANDO TAMAÑO Y DANDO COLOR A ESTOS 3 TOTALES */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-6">
+            {/* Total estimado CNY */}
+            <div className="p-4 rounded-lg shadow-lg bg-gradient-to-br from-blue-500 to-purple-600 text-white transition-all duration-300 hover:scale-105">
+              <h3 className="font-medium text-base sm:text-lg opacity-90">
                 Total estimado CNY
               </h3>
-              <p className="text-lg font-bold text-blue-600 mt-1">
+              <p className="text-3xl sm:text-4xl lg:text-5xl font-extrabold mt-2">
                 ¥{budget.totalCNY.toLocaleString()}
               </p>
             </div>
-            <div className="border-l border-r border-gray-300">
-              <h3 className="font-medium text-gray-900 text-sm">
+            {/* Total estimado USD */}
+            <div className="p-4 rounded-lg shadow-lg bg-gradient-to-br from-green-500 to-teal-600 text-white transition-all duration-300 hover:scale-105">
+              <h3 className="font-medium text-base sm:text-lg opacity-90">
                 Total estimado USD
               </h3>
-              <p className="text-lg font-bold text-blue-600 mt-1">
+              <p className="text-3xl sm:text-4xl lg:text-5xl font-extrabold mt-2">
                 ${budget.totalUSD.toLocaleString()}
               </p>
             </div>
-            <div>
-              <h3 className="font-medium text-gray-900 text-sm">
+            {/* Total estimado EUR */}
+            <div className="p-4 rounded-lg shadow-lg bg-gradient-to-br from-orange-500 to-red-600 text-white transition-all duration-300 hover:scale-105">
+              <h3 className="font-medium text-base sm:text-lg opacity-90">
                 Total estimado EUR
               </h3>
-              <p className="text-lg font-bold text-blue-600 mt-1">
+              <p className="text-3xl sm:text-4xl lg:text-5xl font-extrabold mt-2">
                 €{budget.totalEUR.toLocaleString()}
               </p>
             </div>

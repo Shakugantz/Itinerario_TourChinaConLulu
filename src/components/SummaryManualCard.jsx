@@ -2,6 +2,7 @@ import React from "react";
 import {
   AttachMoney,
   MonetizationOn,
+  CurrencyYen,
   TrendingUp,
   Percent,
 } from "@mui/icons-material";
@@ -23,7 +24,7 @@ const SummaryManualCard = ({
       title: "Costo Real",
       value: formatCurrency(costoReal),
       icon: (
-        <AttachMoney className="text-green-500 text-lg group-hover:animate-pulse" />
+        <CurrencyYen className="text-green-500 text-lg group-hover:animate-pulse" />
       ),
       gradient: "from-green-100 via-white to-green-200",
       border: "border-green-300",
@@ -33,7 +34,7 @@ const SummaryManualCard = ({
       title: "Cotización Cliente",
       value: formatCurrency(cotizacion),
       icon: (
-        <MonetizationOn className="text-blue-500 text-lg group-hover:animate-pulse" />
+        <CurrencyYen className="text-blue-500 text-lg group-hover:animate-pulse" />
       ),
       gradient: "from-blue-100 via-white to-blue-200",
       border: "border-blue-300",

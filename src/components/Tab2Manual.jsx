@@ -1,5 +1,4 @@
 import React from "react";
-
 import Section from "./layout/Section";
 import SeasonSelector from "./SeasonSelector";
 import PeopleCounter from "./PeopleCounter";
@@ -27,32 +26,12 @@ const Tab2Manual = ({
   setManualGuideCost,
   paquetes,
   paqueteIds,
-  isHighSeasonManual,
+  isHighSeasonManual, // Ahora es un valor boolean procesado
   manualBudget,
   resetTab2,
-  peopleCount,
-  extraCosts,
-  remainingBudget,
-  selectedDestinations,
-  season,
-  setSeason,
-  setManualSelectedDestinations: setManualSelectedDestinationsProp,
-  setManualExtraCosts: setManualExtraCostsProp,
-  setManualRemainingBudget: setManualRemainingBudgetProp,
-  setManualPeopleCount: setManualPeopleCountProp,
-  setManualTransportCost: setManualTransportCostProp,
-  setManualGuideCost: setManualGuideCostProp,
+  importarData, // <--- AHORA ES UNA PROP
 }) => {
-  // Función para importar datos desde tab 1
-  const importarData = () => {
-    setManualPeopleCountProp(peopleCount);
-    setManualExtraCostsProp(extraCosts);
-    setManualRemainingBudgetProp(remainingBudget);
-    setManualSelectedDestinationsProp([...selectedDestinations]);
-    setManualTransportCostProp("0");
-    setManualGuideCostProp("0");
-    setSeasonManual(season);
-  };
+  // La función importarData ya no se define aquí, se recibe como prop.
 
   return (
     <div className="space-y-10">
@@ -62,7 +41,7 @@ const Tab2Manual = ({
         data-aos="fade-up"
       >
         <button
-          onClick={importarData}
+          onClick={importarData} // Usamos la prop importarData
           className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white font-bold py-2 px-6 rounded-lg transition duration-300 inline-flex items-center"
         >
           <FileDownload className="mr-2" />
@@ -99,7 +78,7 @@ const Tab2Manual = ({
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
           <Section title="Lugares a visitar">
             <DestinationList
-              destinations={destinations} // <--- USAMOS EL ARREGLO DESTINATIONS AQUÍ
+              destinations={destinations}
               selectedDestinations={manualSelectedDestinations}
               toggleDestination={(id) => {
                 setManualSelectedDestinations((prev) =>
@@ -114,7 +93,7 @@ const Tab2Manual = ({
               paquete3Ids={paqueteIds.paquete3}
               paquete4Ids={paqueteIds.paquete4}
               paquete5Ids={paqueteIds.paquete5}
-              isHighSeason={isHighSeasonManual}
+              isHighSeason={isHighSeasonManual} // Se pasa el valor procesado
               useManualPrices={true}
             />
           </Section>

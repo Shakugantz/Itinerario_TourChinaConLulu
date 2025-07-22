@@ -10,29 +10,29 @@ import { InsightsOutlined } from "@mui/icons-material"; // Ícono moderno de est
 const SummaryCard = ({ title, value }) => {
   return (
     <div
-      className="relative p-6 rounded-2xl overflow-hidden shadow-xl bg-gradient-to-br from-purple-100 via-white to-purple-200 shadow-lg p-6 rounded-2xl border border-purple-300 group"
+      className="relative p-3 rounded-xl overflow-hidden shadow-md bg-white border border-gray-200 group transition-transform duration-300 hover:scale-105" // Reducir padding y bordes, añadir hover
       data-aos="fade-up"
     >
-      {/* Brillo animado de fondo */}
-      <div className="absolute -top-10 -right-10 w-32 h-32 bg-blue-200 opacity-20 rounded-full blur-3xl group-hover:scale-110 transition-transform duration-500"></div>
+      {/* Brillo animado de fondo (más sutil) */}
+      <div className="absolute -top-4 -right-4 w-16 h-16 bg-blue-100 opacity-20 rounded-full blur-xl group-hover:scale-125 transition-transform duration-500"></div>
 
       {/* Encabezado: título e ícono */}
-      <div className="flex items-center justify-between">
-        {/* Título reducido a text-xs para texto más pequeño */}
-        <h4 className="text-sm font-medium text-gray-600 uppercase tracking-wide">
+      <div className="flex items-center justify-between mb-2">
+        {/* Título un poco más pequeño */}
+        <h4 className="text-xs font-medium text-gray-500 uppercase tracking-wider">
           {title}
         </h4>
 
-        <InsightsOutlined className="text-blue-400 text-lg group-hover:animate-pulse transition-transform" />
+        <InsightsOutlined className="text-blue-300 text-base group-hover:text-blue-500 transition-colors" />
       </div>
 
-      {/* Valor principal con tamaño reducido a text-2xl */}
-      <p className="mt-3 text-2xl font-extrabold text-blue-800 tracking-tight drop-shadow-sm">
+      {/* Valor principal más pequeño para estas tarjetas */}
+      <p className="mt-1 text-xl font-extrabold text-blue-700 tracking-tight drop-shadow-sm">
         ¥{value}
       </p>
 
       {/* Línea decorativa inferior */}
-      <div className="mt-4 h-1 w-full bg-gradient-to-r from-blue-400 via-blue-300 to-transparent rounded-full opacity-70"></div>
+      <div className="mt-3 h-0.5 w-full bg-gradient-to-r from-blue-300 via-blue-200 to-transparent rounded-full opacity-60"></div>
     </div>
   );
 };

@@ -12,7 +12,7 @@ const DestinationList = ({
   paquete3Ids,
   paquete4Ids,
   paquete5Ids,
-  isHighSeason,
+  isHighSeason, // Recibe un valor boolean (true, false) o undefined/null
   useManualPrices = false,
 }) => {
   const [showAll, setShowAll] = useState(false);
@@ -65,7 +65,11 @@ const DestinationList = ({
       <div className="space-y-3 overflow-hidden">
         <AnimatePresence initial={false}>
           {displayedDestinations.map((destination, idx) => {
-            const price = isHighSeason
+            // Lógica: Si isHighSeason es undefined/null (no seleccionado), asumimos true (alta)
+            // De lo contrario, usamos el valor de isHighSeason.
+            const currentSeasonIsHigh = isHighSeason ?? true;
+
+            const price = currentSeasonIsHigh
               ? useManualPrices
                 ? destination.highSeasonPriceManual
                 : destination.highSeasonPrice

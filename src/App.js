@@ -15,7 +15,7 @@ import Tab2Manual from "./components/Tab2Manual";
 // Importa tus hooks aquí
 import useAuth from "./hooks/useAuth";
 import usePaquetesLogic from "./hooks/usePaquetesLogic";
-import useTransport from "./hooks/useTransport";
+import useTransport from "./hooks/useTransport"; // Este hook ahora expone una función de reinicio
 import useGuide from "./hooks/useGuide";
 import useUI from "./hooks/useUI";
 import usePeopleCount from "./hooks/usePeopleCount";
@@ -28,8 +28,8 @@ const App = () => {
   const [loginManuallyConfirmed, setLoginManuallyConfirmed] = useState(false);
 
   // Estados para Tab 1
-  const [extraCosts, setExtraCosts] = useState("0");
-  const [remainingBudget, setRemainingBudget] = useState("0");
+  const [extraCosts, setExtraCosts] = useState(0); // Cambiado a número
+  const [remainingBudget, setRemainingBudget] = useState(0); // Cambiado a número
   const [season, setSeason] = useState(""); // "" significa que no se ha seleccionado nada aún
   const { peopleCount, setPeopleCount } = usePeopleCount();
   const {
@@ -45,6 +45,7 @@ const App = () => {
     updateTransportDays,
     airportServicePricesByTransport,
     handleAirportServiceChange,
+    resetTransportState, // <--- Importamos la nueva función de reinicio del transporte
   } = useTransport();
   const { guideDays, setGuideDays } = useGuide();
   const [manualGuide, setManualGuide] = useState(null);
@@ -105,34 +106,47 @@ const App = () => {
   // Función para importar data desde Tab 1 a Tab 2
   const importarData = () => {
     setManualPeopleCount(peopleCount);
-    setManualExtraCosts(extraCosts);
-    setManualRemainingBudget(remainingBudget);
-    setManualSelectedDestinations([...selectedDestinations]);
     // Asegurarse de que los valores de costo sean números si se van a usar en cálculos
+    // Y luego convertirlos a string para los estados del Tab 2 si así lo requieren.
+    setManualExtraCosts(String(extraCosts)); // Convertir a string si Tab2 espera string
+    setManualRemainingBudget(String(remainingBudget)); // Convertir a string si Tab2 espera string
+
+    setManualSelectedDestinations([...selectedDestinations]);
+
+    // Aquí los valores de budget.transport y budget.guide ya deberían ser números
+    // Por lo tanto, puedes usar toLocaleString para formatearlos si es para visualización
+    // o simplemente pasarlos como números si los cálculos en Tab2 los esperan como números.
     setManualTransportCost(
       budget.transport.toLocaleString("en-US", { useGrouping: false })
     );
     setManualGuideCost(
       budget.guide.toLocaleString("en-US", { useGrouping: false })
     );
+
     setSeasonManual(season); // Copia la temporada actual de Tab 1 a Tab 2
     setImportedCotizacionCNY(budget.totalCNY); // Actualiza la cotización para Tab 2
   };
 
+  // --- FUNCIÓN resetTab1 CORREGIDA ---
   const resetTab1 = () => {
-    setSeason("");
-    setPeopleCount(1);
-    setGuideDays(0);
-    resetPaquetes();
-    setExtraCosts("0");
-    setRemainingBudget("0");
-    updateTransportDays(0);
-    setGuideDays(0);
-    setManualGuide(null);
-    setIsManualGuideActive(false);
-    setManualTransportPrices({});
-    setIsManualTransportActive(false);
+    setSeason(""); // Restablecer temporada
+    setPeopleCount(1); // Restablecer contador de personas
+    setGuideDays(0); // Restablecer días de guía
+    resetPaquetes(); // Restablecer lógica de paquetes (destinos, paquetes seleccionados)
+
+    // Restablecer costos adicionales y presupuesto restante a números
+    setExtraCosts(0);
+    setRemainingBudget(0);
+
+    // *** Usamos la función de reinicio expuesta por useTransport ***
+    resetTransportState(); // <--- ¡Este es el cambio clave aquí!
+
+    setManualGuide(null); // Restablecer costo de guía manual
+    setIsManualGuideActive(false); // Desactivar modo manual de guía
+    setManualTransportPrices({}); // Restablecer precios de transporte manual
+    setIsManualTransportActive(false); // Desactivar modo manual de transporte
   };
+  // --- FIN FUNCIÓN resetTab1 CORREGIDA ---
 
   const resetTab2 = () => {
     setManualPeopleCount(1);
@@ -221,13 +235,6 @@ const App = () => {
             manualBudget={manualBudget}
             resetTab2={resetTab2}
             importarData={importarData} // Pasa la función importarData como prop
-            // ELIMINADAS LAS PROPS DEL TAB 1 QUE YA NO SON NECESARIAS AQUÍ:
-            // peopleCount={peopleCount}
-            // extraCosts={extraCosts}
-            // remainingBudget={remainingBudget}
-            // selectedDestinations={selectedDestinations}
-            // season={season}
-            // setSeason={setSeason}
           />
         )}
       </div>

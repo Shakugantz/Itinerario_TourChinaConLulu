@@ -1,11 +1,5 @@
 import React from "react";
-import {
-  AttachMoney,
-  MonetizationOn,
-  CurrencyYen,
-  TrendingUp,
-  Percent,
-} from "@mui/icons-material";
+import { CurrencyYen, Percent } from "@mui/icons-material";
 
 /**
  * Componente resumen para el segundo tab, con diseño visual uniforme al primer tab.
@@ -44,7 +38,7 @@ const SummaryManualCard = ({
       title: "Rentabilidad",
       value: formatCurrency(rentabilidad),
       icon: (
-        <TrendingUp className="text-purple-500 text-lg group-hover:animate-pulse" />
+        <CurrencyYen className="text-purple-500 text-lg group-hover:animate-pulse" />
       ),
       gradient: "from-purple-100 via-white to-purple-200",
       border: "border-purple-300",

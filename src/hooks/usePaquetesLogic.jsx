@@ -26,7 +26,7 @@ export default function usePaquetesLogic(setSelectedDestinationsExternal) {
     paquete1: [1, 2, 3],
     paquete2: [6],
     paquete3: [4, 5],
-    paquete4: [2, 3, 11],
+    paquete4: [2, 3, 7],
     paquete5: [2, 4],
   };
 

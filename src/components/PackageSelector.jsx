@@ -106,7 +106,7 @@ const PackageSelector = ({ paquetes, togglePaquete }) => {
           <div>
             <h3 className="text-lg font-semibold text-gray-800">Paquete 4</h3>
             <p className="text-sm text-gray-600 flex items-center gap-1">
-              <LocationOnIcon className="text-yellow-500" /> Destinos 2, 3 y 11
+              <LocationOnIcon className="text-yellow-500" /> Destinos 2, 3 y 7
             </p>
           </div>
         </div>

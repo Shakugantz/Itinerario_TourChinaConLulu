@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/Itinerario_TourChinaConLulu/static/css/main.45dab49b.css",
-    "main.js": "/Itinerario_TourChinaConLulu/static/js/main.f17aeeb7.js",
+    "main.js": "/Itinerario_TourChinaConLulu/static/js/main.538256b1.js",
     "static/js/453.ddf9d23e.chunk.js": "/Itinerario_TourChinaConLulu/static/js/453.ddf9d23e.chunk.js",
     "index.html": "/Itinerario_TourChinaConLulu/index.html",
     "main.45dab49b.css.map": "/Itinerario_TourChinaConLulu/static/css/main.45dab49b.css.map",
-    "main.f17aeeb7.js.map": "/Itinerario_TourChinaConLulu/static/js/main.f17aeeb7.js.map",
+    "main.538256b1.js.map": "/Itinerario_TourChinaConLulu/static/js/main.538256b1.js.map",
     "453.ddf9d23e.chunk.js.map": "/Itinerario_TourChinaConLulu/static/js/453.ddf9d23e.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.45dab49b.css",
-    "static/js/main.f17aeeb7.js"
+    "static/js/main.538256b1.js"
   ]
 }

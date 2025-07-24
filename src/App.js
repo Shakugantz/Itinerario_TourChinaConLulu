@@ -15,7 +15,7 @@ import Tab2Manual from "./components/Tab2Manual";
 // Importa tus hooks aquí
 import useAuth from "./hooks/useAuth";
 import usePaquetesLogic from "./hooks/usePaquetesLogic";
-import useTransport from "./hooks/useTransport"; // Este hook ahora expone una función de reinicio
+import useTransport from "./hooks/useTransport";
 import useGuide from "./hooks/useGuide";
 import useUI from "./hooks/useUI";
 import usePeopleCount from "./hooks/usePeopleCount";
@@ -71,6 +71,7 @@ const App = () => {
   const isHighSeason = season === "high" || season === "";
   const isHighSeasonManual = seasonManual === "high" || seasonManual === "";
 
+  // Inicialización de AOS
   useEffect(() => {
     AOS.init({ duration: 1000 });
   }, []);
@@ -106,16 +107,11 @@ const App = () => {
   // Función para importar data desde Tab 1 a Tab 2
   const importarData = () => {
     setManualPeopleCount(peopleCount);
-    // Asegurarse de que los valores de costo sean números si se van a usar en cálculos
-    // Y luego convertirlos a string para los estados del Tab 2 si así lo requieren.
     setManualExtraCosts(String(extraCosts)); // Convertir a string si Tab2 espera string
     setManualRemainingBudget(String(remainingBudget)); // Convertir a string si Tab2 espera string
 
     setManualSelectedDestinations([...selectedDestinations]);
 
-    // Aquí los valores de budget.transport y budget.guide ya deberían ser números
-    // Por lo tanto, puedes usar toLocaleString para formatearlos si es para visualización
-    // o simplemente pasarlos como números si los cálculos en Tab2 los esperan como números.
     setManualTransportCost(
       budget.transport.toLocaleString("en-US", { useGrouping: false })
     );
@@ -127,7 +123,7 @@ const App = () => {
     setImportedCotizacionCNY(budget.totalCNY); // Actualiza la cotización para Tab 2
   };
 
-  // --- FUNCIÓN resetTab1 CORREGIDA ---
+  // --- FUNCIÓN resetTab1 ---
   const resetTab1 = () => {
     setSeason(""); // Restablecer temporada
     setPeopleCount(1); // Restablecer contador de personas
@@ -138,16 +134,17 @@ const App = () => {
     setExtraCosts(0);
     setRemainingBudget(0);
 
-    // *** Usamos la función de reinicio expuesta por useTransport ***
-    resetTransportState(); // <--- ¡Este es el cambio clave aquí!
+    // Usamos la función de reinicio expuesta por useTransport
+    resetTransportState();
 
     setManualGuide(null); // Restablecer costo de guía manual
     setIsManualGuideActive(false); // Desactivar modo manual de guía
     setManualTransportPrices({}); // Restablecer precios de transporte manual
     setIsManualTransportActive(false); // Desactivar modo manual de transporte
   };
-  // --- FIN FUNCIÓN resetTab1 CORREGIDA ---
+  // --- FIN FUNCIÓN resetTab1 ---
 
+  // --- FUNCIÓN resetTab2 ---
   const resetTab2 = () => {
     setManualPeopleCount(1);
     setManualExtraCosts("0");
@@ -158,6 +155,19 @@ const App = () => {
     setSeasonManual("");
     setImportedCotizacionCNY(0); // Reiniciar también la cotización importada
   };
+  // --- FIN FUNCIÓN resetTab2 ---
+
+  // Nuevo useEffect para resetear ambos Tabs al cambiar el usuario
+  useEffect(() => {
+    // Si 'user' no es 'undefined' (es decir, ya se inicializó el estado de autenticación),
+    // reiniciamos ambos tabs. Esto se dispara al desloguearse (user pasa a null)
+    // o al loguearse un nuevo usuario (user pasa de null a un objeto).
+    if (user !== undefined) {
+      console.log("User state changed, resetting Tab1 and Tab2 budgets.");
+      resetTab1();
+      resetTab2(); // Reinicia el Tab 2 también
+    }
+  }, [user, resetTab1, resetTab2]); // Dependencias: 'user', y las funciones de reseteo para que useEffect las vea
 
   return (
     <AuthWrapper
